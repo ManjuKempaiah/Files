@@ -1,0 +1,308 @@
+- host: '-' indicates list. 
+
+host - on which host we are running or executing playbook.
+
+become: True: Executes tasks on remote machine with elevated privileges. (using sudo)
+
+tasks: Contains a list of tasks to be executed on the specified host.
+
+Installs the httpd package (Apache web server) in the "present" state.
+
+yum: Ansible module used to manage packages on Red Hat-based systems.
+
+apt: Ansible module used to manage packages on Debian-based systems.
+
+copy: Ansible module used to copy files.
+
+service: Ansible module used to manage services.
+
+copy: Copies the nginx.conf file from the current machine to the /etc/nginx/nginx.conf directory on the target machine.
+
+when: This is a conditional statement that checks if the operating system family is Red Hat (RedHat). If true, the task is executed.
+
+command: Executes a command on the target machine.
+
+Runs the usermod command to add the ec2-user to the docker group, granting it permissions to interact with Docker.
+
+fetch: Ansible module used to copy files from remote hosts to the local machine. It fetches the file specified by src from the EC2 instance and saves it to the location specified by dest on the target machine. The flat: yes option ensures that the file is copied without retaining its directory structure, placing it directly into the destination folder.
+
+Copying the nginx.conf file from the current machine to the /etc/nginx/nginx.conf directory on the target machine ensures that the Nginx server on the target machine is configured according to the specifications defined in the nginx.conf file. This allows you to manage the configuration of Nginx across multiple machines consistently and efficiently using Ansible.
+
+By copying this file to the specified location, you ensure that Nginx is configured correctly on the target machine to serve web content as intended, adhering to the desired server configuration.
+
+
+Pipeline Block: Encloses the entire Jenkins Pipeline script.
+agent any: Specifies that this Pipeline can run on any available agent.
+stages: Defines the stages of the Pipeline.
+stage('Install Docker'): Defines a stage named "Install Docker".
+steps: Contains the steps to be executed within this stage.
+script: Allows running shell scripts within the Pipeline.
+
+sh 'mvn clean package': Executes the Maven command in a shell.
+sh 'mvn sonar': Executes the SonarQube analysis command in a shell.
+withSonarQubeEnv('sonar10'): Sets up the environment for SonarQube analysis using the configuration named sonar10.
+
+Sonar Status Stage: This stage checks the result of the SonarQube quality gate.
+script block: Allows for running arbitrary Groovy code within the pipeline.
+waitForQualityGate(): Waits for the quality gate result from SonarQube.
+if (qg.status != 'OK'): Checks if the quality gate status is not OK. If it is not OK, the pipeline will fail with an error message ("Sonar Analysis failed...").
+
+
+resources: Defines the resource requirements and limits for the container.
+
+requests: Specifies the minimum amount of resources the container needs.
+
+limits: Sets upper limits on the resources the container can consume.
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+FROM alpine:3.18.2: Specifies the base image for the Docker image. In this case, it uses Alpine Linux version 3.18.2.
+
+RUN apk add python3: Installs Python 3 inside the Docker image using the Alpine package manager (apk).
+
+RUN apk add py3-pip: Installs the Python package manager (pip3) inside the Docker image.
+
+WORKDIR /app: Sets the working directory inside the Docker image to /app. This is the directory where subsequent commands will be executed.
+
+COPY requirements.txt .: Copies the requirements.txt file from the build context (the directory where the Dockerfile is located) into the /app directory in the Docker image.
+
+RUN pip3 install -r requirements.txt: Installs Python dependencies specified in the requirements.txt file.
+
+COPY app.py .: Copies the app.py file from the build context into the /app directory in the Docker image.
+
+EXPOSE 80: Informs Docker that the application inside the container will use port 80.
+
+CMD ["python3","app.py"]: Specifies the default command to run when a container is started. In this case, it runs the Python script app.py using Python 3.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FROM node:18: Specifies the base image for the Docker image. In this case, it uses Node.js version 18.
+
+WORKDIR /app: Sets the working directory inside the Docker image to /app. This is the directory where subsequent commands will be executed.
+
+COPY package*.json ./: Copies the package.json and package-lock.json files from the build context (the directory where the Dockerfile is located) into the /app directory in the Docker image.
+
+RUN npm install: Installs Node.js dependencies based on the package.json and package-lock.json files.
+
+COPY server.js ./: Copies the server.js file from the build context into the /app directory in the Docker image.
+
+EXPOSE 8080: Informs Docker that the application inside the container will use port 8080. However, this instruction does not actually publish the port; it's more of a documentation feature.
+
+CMD [ "node", "server.js" ]: Specifies the default command to run when a container is started. In this case, it runs the Node.js application using the node command and executes the server.js file.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FROM alpine:3.18.2: Specifies the base image for the Docker image. In this case, it uses Alpine Linux version 3.18.2.
+
+RUN apk add openjdk11: Installs OpenJDK 11 inside the Docker image using the Alpine package manager (apk).
+
+WORKDIR /tomcat: Sets the working directory inside the Docker image to /tomcat. This is the directory where subsequent commands will be executed.
+
+ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.78/bin/apache-tomcat-9.0.78.tar.gz .: Downloads the Apache Tomcat 9.0.78 distribution from the specified URL and adds it to the /tomcat directory in the Docker image.
+
+RUN tar xf apache-tomcat-9.0.78.tar.gz && rm apache-tomcat-9.0.78.tar.gz: Extracts the contents of the downloaded tar.gz file and removes the compressed file.
+
+EXPOSE 8080: Informs Docker that the application inside the container will use port 8080. However, this instruction does not actually publish the port; it's more of a documentation feature.
+
+CMD ["/tomcat/apache-tomcat-9.0.78/bin/catalina.sh", "run"]: Specifies the default command to run when a container is started. In this case, it runs the Apache Tomcat server using the catalina.sh script with the "run" argument.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FROM nginx:latest: Specifies the base image to use, in this case, the latest version of the Nginx image available from the Docker Hub.
+
+EXPOSE 80: Exposes port 80 on the container. This declaration informs Docker that the container listens on port 80 at runtime, but it does not actually publish the port to the host.
+
+CMD ["nginx", "-g", "daemon off;"]: Specifies the default command to run when the container starts. In this case, it starts the Nginx server with the -g option set to daemon off;, which tells Nginx to run in the foreground and not detach from the shell. This ensures that the container remains running and does not exit immediately after starting.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FROM openjdk:11-jre-slim: Specifies the base image as OpenJDK 11 JRE slim version, providing the runtime environment for Java applications.
+
+WORKDIR /app: Sets the working directory inside the container to /app. This directory will be used as the context for subsequent commands.
+
+COPY app.jar .: Copies the app.jar file from the Docker build context into the /app directory within the container. This assumes that app.jar contains the Java application to be executed.
+
+EXPOSE 8080: Exposes port 8080 on the container. This declaration indicates that the container will listen for incoming connections on port 8080, but it does not actually publish the port to the host machine.
+
+CMD ["java", "-jar", "app.jar"]: Specifies the default command to run when the container starts. It launches the Java application contained in app.jar using the java -jar command.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+apiVersion: v1: Specifies the Kubernetes API version being used for this configuration, in this case, version 1.
+
+kind: Pod: Indicates that this YAML defines a Kubernetes Pod.
+
+metadata: Contains information about the Pod, such as its name and labels.
+
+name: myapp: Specifies the name of the Pod as "myapp".
+
+labels: Assigns labels to the Pod, and in this case, it has a label named "name" with the value "myapp".
+
+spec: Describes the desired state of the Pod.
+
+containers: Specifies the containers to run inside the Pod.
+
+name: myapp: Names the container as "myapp".
+
+image: nginx: Specifies the Docker image to use for this container, in this case, the official Nginx image.
+
+resources: Defines the resource requirements and limits for the container.
+
+requests: Specifies the minimum amount of resources the container needs.
+
+memory: "128Mi": Requests 128 megabytes of memory.
+
+cpu: "250m": Requests 250 milliCPU (0.25 CPU cores).
+
+limits: Sets upper limits on the resources the container can consume.
+
+memory: "256Mi": Limits the container to using a maximum of 256 megabytes of memory.
+
+cpu: "500m": Limits the container to using a maximum of 500 milliCPU (0.5 CPU cores).
+
+ports: Specifies the ports to expose on the container.
+
+containerPort: 80: Exposes port 80 on the container.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+apiVersion: v1: Specifies the Kubernetes API version being used for this configuration, in this case, version 1.
+
+kind: Service: Indicates that this YAML defines a Kubernetes Service.
+
+metadata: Contains information about the Service, such as its name.
+
+name: myapp: Specifies the name of the Service as "myapp".
+spec: Describes the desired state of the Service.
+
+selector: Defines a label selector that the Service will use to target Pods.
+
+name: myapp: Specifies that the Service should target Pods with the label "name" set to "myapp".
+ports: Specifies the ports to open on the Service.
+
+port: 80: Defines that the Service should listen on port 80.
+
+targetPort: 80: Specifies that the traffic should be forwarded to Pods on port 80.
+
+nodePort: 30000: Opens a specific port on all nodes in the cluster, allowing external traffic to reach the Service.
+
+type: LoadBalancer: Specifies the type of Service, in this case, a LoadBalancer type. However, there's a typo in the configuration (LoadBalncer should be corrected to LoadBalancer), and it should be noted that not all Kubernetes clusters support automatic provisioning of external LoadBalancers.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+apiVersion: apps/v1: Specifies the Kubernetes API version being used for this configuration, in this case, version 1 under the apps group.
+
+kind: ReplicaSet: Indicates that this YAML defines a Kubernetes ReplicaSet.
+
+metadata: Contains information about the ReplicaSet, such as its name.
+
+name: nginx: Specifies the name of the ReplicaSet as "nginx".
+spec: Describes the desired state of the ReplicaSet.
+
+replicas: 3: Specifies that the ReplicaSet should maintain 3 replicas (Pods) of the specified template.
+
+selector: Defines a label selector that the ReplicaSet will use to select Pods to manage.
+
+matchExpressions: Specifies a set of label requirements.
+
+{key: app, operator: In, values: [nginx]}: Requires that the "app" label is set to "nginx" on the Pods.
+template: Describes the template used for creating new Pods.
+
+metadata: Contains information about the Pods created from this template.
+
+name: nodeapp: Specifies the name of the Pods as "nodeapp".
+
+labels: Assigns labels to the Pods.
+
+app: nginx: Sets the "app" label to "nginx" for the Pods.
+spec: Describes the specification of the Pods.
+
+containers: Specifies the containers to run inside the Pods.
+
+name: nginx: Names the container as "nginx".
+
+image: nginx: Specifies the Docker image to use for this container, in this case, the official Nginx image.
+
+ports: Specifies the ports to expose on the container.
+
+containerPort: 80: Exposes port 80 on the container.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+apiVersion: apps/v1: Specifies the Kubernetes API version being used for this configuration, in this case, version 1 under the apps group.
+
+kind: Deployment: Indicates that this YAML defines a Kubernetes Deployment.
+
+metadata: Contains information about the Deployment, such as its name.
+
+name: myapp: Specifies the name of the Deployment as "myapp".
+spec: Describes the desired state of the Deployment.
+
+replicas: 3: Specifies that the Deployment should maintain 3 replicas of the specified template.
+
+selector: Defines a label selector that the Deployment will use to select Pods to manage.
+
+matchLabels: Specifies that the Pods managed by this Deployment should have the label "app" set to "myapp".
+template: Describes the template used for creating new Pods.
+
+metadata: Contains information about the Pods created from this template.
+
+labels: Assigns labels to the Pods.
+
+app: myapp: Sets the "app" label to "myapp" for the Pods.
+spec: Describes the specification of the Pods.
+
+containers: Specifies the containers to run inside the Pods.
+
+name: myapp: Names the container as "myapp".
+
+image: kammana/nodeapp:v1: Specifies the Docker image to use for this container, in this case, "kammana/nodeapp" with the version "v1".
+
+resources: Defines resource limits for the container.
+
+limits: Sets upper limits on the resources the container can consume.
+
+memory: "128Mi": Limits the container to using a maximum of 128 megabytes of memory.
+
+cpu: "500m": Limits the container to using a maximum of 500 milliCPU (0.5 CPU cores).
+
+ports: Specifies the ports to expose on the container.
+
+containerPort: 8080: Exposes port 8080 on the container.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+spec: Describes the desired state of the Deployment.
+
+replicas: 5: Specifies that the Deployment should maintain 5 replicas of the specified template.
+
+strategy: Defines the update strategy for the Deployment.
+
+type: RollingUpdate: Specifies that updates to the Deployment should be rolled out gradually to minimize disruption.
+
+rollingUpdate: Configures parameters for the rolling update strategy.
+
+maxSurge: 25%: Specifies that during updates, the number of new Pods created can surge up to 25% above the desired number of replicas.
+
+maxUnavailable: 25%: Specifies that during updates, up to 25% of the existing Pods can be unavailable (not running) at any given time.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+volumeMounts: Mounts a volume named data-volume to the container at the path /app/data.
+volumes: Defines the volumes used by pods created from this Deployment.
+name: data-volume: Specifies the name of the volume.
+persistentVolumeClaim: Specifies that the volume is backed by a PersistentVolumeClaim (PVC) named my-pvc. This PVC would be associated with a PersistentVolume (PV) provisioned by the underlying storage system.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Pipeline Block: Encloses the entire Jenkins Pipeline script.
+agent any: Specifies that this Pipeline can run on any available agent.
+stages: Defines the stages of the Pipeline.
+stage('Install Docker'): Defines a stage named "Install Docker".
+steps: Contains the steps to be executed within this stage.
+script: Allows running shell scripts within the Pipeline.
+sh 'sudo yum install docker -y': Installs Docker using the yum package manager with the -y flag to automatically answer yes to prompts.
+sh 'sudo systemctl start docker': Starts the Docker service.
+sh 'usermod -a -G docker ec2-user': Grants the ec2-user permissions to access Docker by adding it to the docker group.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
