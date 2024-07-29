@@ -1,0 +1,261 @@
+Pipeline Block: Encloses the entire Jenkins Pipeline script.
+agent any: Execute pipeline on any any available agent in Jenkins environment.
+stages: Defines the stages of the Pipeline.
+stage('Install Docker'): Defines a stage named "Install Docker".
+steps: Contains the steps to be executed within this stage.
+script: Allows running shell scripts within the Pipeline.
+
+pipeline{
+	agent any
+	stages{
+	stage('Install Nginx'){
+	steps{
+	script{
+	// Update Package Repository
+	sh 'sudo yum update -y'
+	// Install Nginx
+	sh 'sudo yum install nginx -y'
+	// Start Nginx Service
+	sh 'sudo systemctl start nginx'
+	// Enable Nginx Service
+	sh 'sudo systemctl enable nginx'
+	}
+	}
+	}
+	}
+	post{
+	sucess{
+	echo "Nginx has been sucessfully installed"
+	}
+	failure{
+	echo "Failed to install nginx"
+	}
+	}
+}
+
+pipeline{
+	agent any
+	environment{
+	NODE_VERSION = '20.x'
+	}
+	stages{
+	stage('Install Node.js'){
+	steps{
+	script{
+	// Install node.js using node source repository
+	sh 'curl -fsSL https://rpm.nodesource.com/setup_${NODE_VERSION} | sudo bash -'
+	// Install Node.js
+	sh 'sudo yum install node.js -y'
+	}
+	}
+	}
+	}
+	post{
+	sucess{
+	echo "Node.js has been sucessfully installed"
+	}
+	failure{
+	echo "Failed to install nodejs"
+	}
+	}
+}
+
+pipeline{
+	agent any
+	stages{
+	stage('Install Docker'){
+	steps{
+	script{
+	// Install docker
+	sh 'sudo yum install docker -y'
+	// Start docker
+	sh 'sudo systemctl start docker'
+	// Grant ec2-user permissions on docker
+	sh 'usermod -a -G docker ec2-user'
+	}
+	}
+	}
+	}
+}
+
+
+pipeline{
+	agent any
+	stages{
+	stage('Install Ansible'){
+	steps{
+	script{
+	// Install EPEL repository          EPEL is needed to access the Ansible package on Amazon Linux
+	sh 'sudo yum install epel-release'  Extra Packages for Enterprise Linux 
+	// Install Ansible
+	sh 'sudo yum instll ansible -y'
+	}
+	}
+	}
+	}
+}
+
+
+pipeline{
+	agent any
+	stages{
+	stage('Task1 and Task2'){
+	parallel{
+	stage('Task1'){
+	steps{
+	echo"Task1...."
+	}
+	}
+	stage('Task2'){
+	steps{
+	echo"Task2...."
+	}
+	}
+	}
+	}
+	}
+}
+
+
+pipeline{
+	agnet none
+	stages{
+	stage('Build on Agent1'){
+	agent{
+	label'agent1'
+	}
+	steps{
+	// Build steps for Agent1
+	}
+	}
+	stage('Build on Agent2'){
+	agent{
+	label'agent2'
+	}
+	steps{
+	// Build steps for Agent2
+	}
+	}
+	}
+}
+
+
+pipeline{
+	agent none
+	stages{
+	stage('Build on Agent1'){
+	steps{
+	node('agent1'){
+	// Build steps for Agent1
+	}
+	}
+	}
+	stage('Build on Agent2'){
+	steps{
+	node('agent2'){
+	// Build steps for Agent2
+	}
+	}
+	}
+	}
+}
+
+
+pipeline{
+    agent any
+    stages{
+        stage("SCM"){
+            steps{
+                git branch:'main', credentialsId:'git-ManjuKempaiah', url:'https://github.com/ManjuKempaiah/chatboy'
+            }
+        }
+        stage("Maven and sonar"){
+            parallel{
+                stage("Maven Package"){
+                    steps{
+                        sh 'mvn clean package'       
+                    }
+                }
+                stage("Sonar Analysis"){
+                    steps{
+                        withSonarQubeEnv('sonar10'){  
+                            sh 'mvn sonar:sonar'      
+                        }
+                    }
+                }
+            }
+        }
+        stage("Sonar Status"){
+            steps{
+                script{
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK'){
+                        error "Sonar Analysis failed..."
+                    }
+                }
+            }
+        }
+    }
+}
+
+--------------------------------------------------------------------------------------------------------------------
+
+pipeline{
+	agent any
+	environment{
+	GIT_BRANCH = "main"
+	GIT_CREDS  = "git-ManjuKempaiah"
+	GIT_URL    = "https://github.com/ManjuKempaiah/chatbot"
+	}
+	stages{
+	stage('Checkout The Code'){
+	steps{
+	git branch: GIT_BRANCH, credentialsId: GIT_CREDS, url: GIT_URL
+	}
+	}
+	stage('Maven Build'){
+	steps{
+	sh 'mvn clean package'
+	}
+	}
+	stage('SoanrQube Analysis'){
+	steps{
+	withSonarQubeEnv('sonar10'){
+	sh 'mvn sonar:sonar'
+	}
+	}
+	}
+	stage('SonarQube Status'){
+	steps{
+	script{
+	def qg = waitForQualityGate()
+	if (qg.status != 'OK'){
+	error "Sonar Analysis Failed"
+	}
+	}
+	}
+	}
+	}
+}
+
+--------------------------------------------------------------------------------------------------------------------------
+
+sh 'mvn clean package': Executes the Maven command in a shell.
+sh 'mvn sonar': Executes the SonarQube analysis command in a shell.
+withSonarQubeEnv('sonar10'): Sets up the environment for SonarQube analysis using the configuration named sonar10.
+
+Sonar Status Stage: This stage checks the result of the SonarQube quality gate.
+script block: Allows for running arbitrary Groovy code within the pipeline.
+waitForQualityGate(): Waits for the quality gate result from SonarQube.
+if (qg.status != 'OK'): Checks if the quality gate status is not OK. If it is not OK, the pipeline will fail with an error message ("Sonar Analysis failed...").
+--------------------------------------------------------------------------------------------------------------------------
+Here's a simple shell script to print "Hello, World!" to the terminal
+
+#!/bin/bash
+
+# Shell script to print Hello, World!
+echo "Hello, World!"
+
+--------------------------------------------------------------------------------------------------------------------------
+
+The shebang line in a shell script is a special character sequence (#!) followed by the path to the interpreter that should execute the script. It is used to specify which interpreter should be used to parse and execute the script. This line must appear as the very first line in the script file.
