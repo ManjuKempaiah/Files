@@ -1,0 +1,149 @@
+FROM        -- Sepcefies the base image for the docker image
+WORKDIR     -- Sets the Working Directory inside the docker image
+RUN         -- RUN is the docker build time insntruction
+CMD         -- CMD is the docker run time instruction
+COPY        -- COPY copies files and folders from host machine to image
+ADD         -- ADD copies file and folders from host machine to image
+               ADD have an extra capability, It Downloads the file from URL
+               And also it auto extract the compressed file
+EXPOSE      -- Exposes port to the host machine
+CMD         -- CMD can be Overriden at run time
+ENTRYPOINT  -- ENTRYPOINT cannot be overriden at run, it is getting apended
+               CMD and ENTRYPOINT cab be used together
+ARG         -- ARG is the docker build time Argument
+ENV         -- ENV is the docker run time Argument
+LABEL       -- To add Metadata
+USER        -- To run application using specific user
+HEALTHCHECKS-- To check the health of the application 
+
+---------------------------------------------------------
+
+FROM nginx:latest
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+FROM openjdk:11-jre-slim
+WORKDIR /app
+COPY app.jar .
+EXPSOE 8080
+CMD ["java", "-jar", "app.jar"]
+
+FROM alpine:3.18.2
+RUN apk add python3
+RUN apk add py3-pip
+WORKDIR /app
+COPY requirements.txt .
+RUN pip3 insntall requirements.txt
+COPY app.py .
+EXPOSE 80
+CMD ["python3","app.py"]
+
+
+FROM node:18
+WORKKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY server.js .
+EXPOSE 8080         Exposes ports to the host machine
+CMD ["node","server.js"]
+
+
+FROM alpine:3.18.2
+RUN apk add openjdk11
+WORKDIR /tomcat
+ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.90/bin/apache-tomcat-9.0.90.tar.gz .
+RUN tar xf apache-tomcat-9.0.90.tar.gz && rm apache-tomcat-9.0.90.tar.gz
+EXPOSE 8080
+CMD [/tomcat/apache-tomcat-9.0.9/bin/catalina.sh]
+
+Extract the contents of the apache-tomcat-9.0.91.tar.gz archive.
+Remove the archive file after extraction to save space in the Docker image.
+----------------------------------------------------------------------------------------
+
+docker logs container_id
+docker stats
+docker exec -it container_id bash
+docker inspect container_id
+docker-compose up -d
+docker-compse ps
+docker network create --driver=bridge networkname
+docker info
+/var/lib/docker/volumes
+docker history image_id
+
+
+docker image prune -f
+docker system prune -f
+
+
+docker ps 
+docker ps -a
+docker rm container_id
+docker rm -f container_id
+docker rm -f $(docker ps -aq)
+docker ps --filter="status=exited" -q
+docker ps -f="status=exited" -q
+docker ps -f "status=exited" -q
+docker rm -f $(docker ps --filter="status=exited" -q)
+
+docker images
+docker rmi imageid
+docker rmi -f imageid
+docker rmi -f $(docker images -q)
+docker images --filter="dangling=true" -q
+docker images -f="dangling=true" -q
+docker images -f "dangling=true" -q
+docker rmi -f $(docker images --filter="dangling=true" -q)
+
+docker build -t manjukempaiah/<image_name>:<tag> .
+docker run -d -p <host_port>:<container_port> --name container_name <image_name>:<tag>
+
+docker run -it -e CONFIG_FILE="/app/prod.config" manjukempaiah/tomcat:0.0.1 
+docker run -it --env-file ./manju.env manjukempaiah/tomcat:0.0.1
+docker build -t manjukempaiah/tomcat:0.0.1 . --build-arg JAVA_PKG=openjdk11
+
+-------------------------------------------------------------------------------------------------------------
+
+eksctl create cluster --name=jhc-aug-dev
+eksctl delete cluster --name=jhc-aug-dev 
+
+
+kubectl create -f pods.yml
+kubectl apply -f pods.yml
+kubectl delete -f pods.yml
+
+kubectl logs <pod_name>
+kubectl logs <pod_name> -c conatiner_name
+kubectl exec -it <pod_name> -- /bin/bash
+kubectl get pods -o wide
+
+
+kubectl describe pod <pod_name>
+kubectl describe pod <pod_name> -c container_name
+kubectl describe pod <pod_name> -n namespace | grep "Restart Count"
+
+To find all pods across all namespaces that are not ready
+kubectl get pods -A | grep "0/"
+
+To find all failed pods in the current namespace,
+kubectl get pods --field-selector=status.phase=Failed
+
+To find failed pods across all namespaces, add the -A flag:
+kubectl get pods -A --field-selector=status.phase=Failed
+
+
+kubectl rollout status deployment deployment_name -n namespace
+kubectl rollout undo deployment deployment_name -n namespace
+kubectl rollout restart deployment deployment_name -n namespace
+
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl edit svc/argocd-server -n argocd
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+
+
+
+
+
+
+
