@@ -1,0 +1,365 @@
+FROM jenkins/jenkins:lts
+
+FROM jenkins/jenkins:lts: Specifies the base image to use. This image is the official Jenkins image, using the LTS (Long-Term Support) version.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+FROM docker:latest
+
+FROM docker:latest: Specifies the base image to use. The docker:latest image already contains Docker installed, so you don't need to manually install it.
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+FROM nginx:latest
+EXPOSE 80		
+CMD ["nginx", "-g", "daemon off;"]
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Dockerfile for SpringBootApplication
+
+FROM openjdk:11-jre-slim
+WORKDIR /app
+COPY app.jar .
+EXPOSE 8080
+CMD ["java", "-jar", "app.jar"]
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Dockerfile for tomcat
+
+FROM alpine:3.18.2
+RUN apk add openjdk11
+WORKDIR /tomcat
+ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.78/bin/apache-tomcat-9.0.78.tar.gz .
+RUN tar xf apache-tomcat-9.0.78.tar.gz && rm apache-tomcat-9.0.78.tar.gz
+EXPOSE 8080
+CMD ["/tomcat/apache-tomcat-9.0.78/bin/catalina.sh", "run"]
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Dockerfile for Pythonapp
+
+FROM alpine:3.18.2
+RUN apk add python3
+RUN apk add py3-pip
+WORKDIR /app
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+COPY app.py .
+EXPOSE 80
+CMD ["python3","app.py"]
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Docker file for Node Js
+
+FROM node:18
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY server.js .
+EXPOSE 8080
+CMD [ "node", "server.js" ]
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Apache playbook
+
+- hosts: 172.31.36.99
+  become: True
+  tasks:
+    - name: install apache
+      yum:
+        name: httpd
+        state: present
+    - name : put sample html file on apache
+      copy:
+        src: index.html
+        dest: /var/www/html
+    - name: start and enable apache
+      service:
+        name: httpd
+        state: started
+        enabled: True
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+Nginx playbook
+
+- hosts: 172.31.41.58
+  become: True
+  tasks:
+    - name: configure nginx rpm
+      yum: name=http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+    - name: install nginx
+      yum:
+        name: nginx
+        state: present
+    - name: copy nginx config file
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+      notify:
+          - restart nginx
+    - name: start and enable
+      service:
+        name: nginx
+        state: started
+        enabled: True
+  handlers:
+    - name: restart nginx
+      service :
+        name: nginx
+        state: restarted
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Can you please write ansible playbook conditionally install a package,if it is linux how to install package,if it is ubuntu how to install a package.
+
+- hosts: 172.31.36.99
+  become: True
+  tasks:
+    - name: install apache on linux
+      yum:
+        name: httpd
+        state: present
+      when: ansible_facts['os_family'] == "RedHat"
+    - name: install apache on ubuntu
+      apt:
+        name: apache2
+        state: present
+      when: ansible_facts['os_family'] == "Debian"
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Docker install
+
+- hosts: localhost
+  become: True
+  tasks:
+    - name: install docker
+      yum:
+        name: docker
+        state: present
+    - name: Grant ec2-user permissions on docker
+      command:
+        cmd: "usermod -a -G docker ec2-user"
+    - name: start docker
+      service:
+        name: docker
+        state: started
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+node.js install 
+
+- name: Install Node.js
+  hosts: your_target_hosts
+  become: yes
+  tasks:
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+      when: ansible_distribution == 'Ubuntu'
+    - name: Install Node.js on CentOS
+      yum:
+        name: nodejs
+        state: present
+      when: ansible_distribution == 'CentOS'
+    - name: Install Node.js on Amazon Linux
+      yum:
+        name: nodejs
+        state: present
+      when: ansible_distribution == 'Amazon'
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+Copy file from EC2 to target machine
+
+- name: Copy file from EC2 to target machine
+  hosts: target_machine
+  become: yes
+  tasks:
+    - name: Copy file from EC2 to target machine
+      copy:
+        src: /path/to/source/file/on/ec2
+        dest: /path/to/destination/folder/on/target_machine
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+pods.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    name: myapp
+spec:
+  containers:
+    - name: myapp
+      image: nginx
+      resources:
+        requests:
+          memory: "128Mi"
+          cpu: "250m"
+        limits:
+          memory: "256Mi"
+          cpu: "500m"
+      ports:
+        - containerPort: 80
+
+resources: Defines the resource requirements and limits for the container.
+
+requests: Specifies the minimum amount of resources the container needs.
+
+limits: Sets upper limits on the resources the container can consume.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+nginxsvc.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+spec:
+  selector:
+    name: myapp
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30000
+  type: LoadBalancer
+
+port: 80: Defines that the Service should listen on port 80.
+
+targetPort: 80: Specifies that the traffic should be forwarded to Pods on port 80.
+
+nodePort: 30000: Opens a specific port on all nodes in the cluster, allowing external traffic to reach the Service.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+ReplicaSet
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx
+spec:
+  replicas: 3
+  selector:
+    matchExpressions:
+      - {key: app, operator: In, values: [nginx]}
+  template:
+    metadata:
+      name: nodeapp
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: kammana/nodeapp:v1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Rolling Updates
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeapp
+spec:
+  replicas: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: nodeapp
+  template:
+    metadata:
+      labels:
+        app: nodeapp
+    spec:
+      containers:
+      - image: kammana/nodeapp:v2
+        name: nodeapp
+        ports:
+        - containerPort: 8080
+
+maxSurge: Represents the maximum number or percentage of Pods that can be created above the desired number of replicas during an update. Here, it is set to 25%.
+maxUnavailable: Represents the maximum number or percentage of Pods that can be unavailable (not running) during an update. Here, it is set to 25%.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeapp
+spec:
+  replicas: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: nodeapp
+  template:
+    metadata:
+      labels:
+        app: nodeapp
+    spec:
+      containers:
+      - image: kammana/nodeapp:v2
+        name: nodeapp
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: data-volume
+          mountPath: /app/data   # Mount the volume to this path
+  volumes:
+  - name: data-volume
+    persistentVolumeClaim:
+      claimName: my-pvc   # Name of the PersistentVolumeClaim
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
