@@ -1,0 +1,231 @@
+top or htop command to check cpu utilization
+
+free or top command to check memory utilization
+
+
+
+getent passwd --- to list the users on linux system
+
+getent group ---- to list the groups on linux system
+
+getent group <group_name> --- to list the users in group
+
+
+init 0 - command to shutdown the  linux system
+
+init 6 - command to reboot the linux system
+
+
+lscpu --- to check number of cpus on linux system
+nproc
+
+
+lsof -p <PID>---- to find the openfiles by a specific process
+lsof -c <process_name>
+
+
+ps -c <process_name> ----- how to check if a process is running
+pgrep <process_name>
+
+
+ps aux | grep <process_name>   ---- To find the PID
+pgrep <process_name>
+
+kill PID --- To Kill a process
+
+
+uname -r ---- to check the kernel version on linux 
+uname -a 
+
+
+How to check specific port is open on remote host
+
+By using command line tools such as nmap, netcat(nc), telnet
+
+nmap -p <port> <hostname>
+nc -zv <hostname> <port>
+telnet <hostname> <port>
+
+
+nmap <hostname> ---- To check all ports open on remotehost
+
+
+To check open ports on linux we can use netstat or ss(socket statistics) command
+
+netstat -tuln
+ss -tuln 
+
+command | tee filename
+
+
+how to find file consuming more space
+
+du -a | sort -n -r | head -n 10
+
+
+How to find top 5 processes consuming more memory
+Bu using ps command along with sort and head command
+ps aux --sort=-%mem | head -n 5 
+
+
+df and du command to check disk utilization.
+
+df stands for disf free.This command displays the amount free and used disk space on the file system
+df -h -- It displays the information about each file system
+
+du stands for disk utilization. To check disk usage of specific files or directories.
+du -sh
+
+grep stands for Global Regular Expression Print
+
+grep -c "<pattern>" filename ---- To count the number of occurences of specific pattern in a file and to display the count
+grep  -C 5 "<pattern>" filename
+grep "<pattern>" filename ----- To search the lines containing specific pattern in a file and display those lines
+grep -o "word" filename | wc -l ----- To find the number of occurences of word in a file
+-o: This option instructs grep to only print the matching parts of the line, instead of the entire line.
+
+𝐇𝐨𝐰 𝐭𝐨 𝐬𝐞𝐚𝐫𝐜𝐡 𝐦𝐮𝐥𝐭𝐢𝐩𝐥𝐞 𝐰𝐨𝐫𝐝𝐬 𝐚𝐧𝐝 𝐝𝐢𝐬𝐩𝐥𝐚𝐲 𝐦𝐚𝐭𝐜𝐡𝐢𝐧𝐠 𝐜𝐨𝐧𝐭𝐞𝐧𝐭 𝐟𝐫𝐨𝐦 𝐚 𝐟𝐢𝐥𝐞 𝐢𝐧 𝐋𝐢𝐧𝐮𝐱?
+grep -E 'word1|word2|word3' filename
+
+wc -l filename --- To find the number of lines in a file
+wc -w filename --- To find the number of words ina file
+wc -m filename --- To find the number of characters in a file
+
+𝐇𝐨𝐰 𝐭𝐨 𝐫𝐞𝐩𝐥𝐚𝐜𝐞 𝐚 𝐬𝐩𝐞𝐜𝐢𝐟𝐢𝐜 𝐰𝐨𝐫𝐝 𝐰𝐢𝐭𝐡𝐢𝐧 𝐚 𝐟𝐢𝐥𝐞?
+sed -i 's/old_word/new_word/g' filename
+
+How to replace the string nth line and first occurences?
+sed -i '<n>s/old_string/new_string/' filename
+
+𝐇𝐨𝐰 𝐭𝐨 𝐝𝐢𝐬𝐩𝐥𝐚𝐲 𝐚 𝐬𝐩𝐞𝐜𝐢𝐟𝐢𝐜 𝐥𝐢𝐧𝐞 𝐟𝐫𝐨𝐦 𝐚 𝐟𝐢𝐥𝐞?
+sed -n 'x{p;q}' filename
+
+ps -o ux --- To display the list of running processes in a simplified format
+
+How do you find which process consuming significant memory?
+By using Top or Ps command
+
+
+How to block root user?
+
+Modify shh configuration file /etc/ssh/sshd_config
+Set PermitRootLogin to no.
+Restart the ssh service
+By using sudo systemctl restart sshd
+
+How to provide sudo access to user?
+
+Add user to sudo group
+sudo usermod -a -G sudo username
+Edit sudoers file
+sudo vi sudo
+To allow specific user to use sudo add a line like this
+username ALL=(ALL:ALL) ALL
+
+
+Linux kernel is the core component of the linux operating system, managing system resources and providing communication between hardware and software.
+
+A hard link acts as copy of the selected file.It aceess the data available in the original file.
+If the earlier selected file is deleted, the hard link to the file will still contain the data of that file.
+
+A soft link acts as a pointer or reference to  the filename.It does not access the data available in the original file.
+If the earlier selected file is deleted, the soft link to the file that does not exit any more.
+
+An inode is a datastructure, that keeps track of all files and directories in a linux file system,So every file and directory in a file system is allocated an inode, which is identified by an integer known as Inode number.
+
+Swap memory is also known as swap space or virtual memory.Swap memory is a space on the storage device that the operating system uses as virtual memory when physical RAM is full, when RAM is full inactive pages of the memory are moved to swap space,freeing up physical space for active processes.
+
+A shell is a command line interface that allows users to interact with linux operating system.
+
+𝟏. 𝐈𝐟 𝐲𝐨𝐮 𝐰𝐚𝐧𝐭 𝐭𝐨 𝐫𝐮𝐧 𝐚 𝐭𝐚𝐬𝐤/𝐬𝐜𝐫𝐢𝐩𝐭 𝐢𝐧 𝐛𝐚𝐜𝐤𝐠𝐫𝐨𝐮𝐧𝐝 𝐞𝐯𝐞𝐧 𝐢𝐟 𝐲𝐨𝐮 𝐜𝐥𝐨𝐬𝐞 𝐲𝐨𝐮𝐫 𝐭𝐞𝐫𝐦𝐢𝐧𝐚𝐥, 𝐰𝐡𝐚𝐭 𝐢𝐬 𝐭𝐡𝐞 𝐰𝐚𝐲?
+nohup no hang up
+nohup ./manju_script.sh & (ampersand)
+
+./manju_script.sh &
+
+jobs command to list the processes running in background
+
+To bring back to foreground
+fg %1
+
+2. 𝐇𝐨𝐰 𝐭𝐨 𝐫𝐞𝐜𝐨𝐫𝐝 𝐲𝐨𝐮𝐫 𝐚𝐜𝐭𝐢𝐯𝐢𝐭𝐲 𝐨𝐧 𝐭𝐞𝐫𝐦𝐢𝐧𝐚𝐥 𝐢𝐧 𝐚 𝐟𝐢𝐥𝐞?
+script filename
+
+3. 𝐇𝐨𝐰 𝐭𝐨 𝐜𝐨𝐦𝐩𝐚𝐫𝐞 𝐚𝐧𝐝 𝐝𝐢𝐬𝐩𝐥𝐚𝐲 𝐝𝐢𝐟𝐟𝐞𝐫𝐞𝐧𝐜𝐞 𝐛𝐞𝐭𝐰𝐞𝐞𝐧 𝐟𝐢𝐥𝐞𝐬 𝐢𝐧 𝐋𝐢𝐧𝐮𝐱?
+diff -u file1 file2
+
+4. 𝐇𝐨𝐰 𝐭𝐨 𝐜𝐡𝐞𝐜𝐤 𝐢𝐟 𝐭𝐰𝐨 𝐟𝐢𝐥𝐞𝐬 𝐚𝐫𝐞 𝐢𝐝𝐞𝐧𝐭𝐢𝐜𝐚𝐥 𝐨𝐫 𝐧𝐨𝐭 𝐢𝐧 𝐋𝐢𝐧𝐮𝐱?
+diff file1 file2
+cmp file1 file2
+
+5. 𝐇𝐨𝐰 𝐭𝐨 𝐒𝐎𝐑𝐓 𝐭𝐡𝐞 𝐜𝐨𝐧𝐭𝐞𝐧𝐭 𝐟𝐫𝐨𝐦 𝐚 𝐟𝐢𝐥𝐞 𝐢𝐧 𝐋𝐢𝐧𝐮𝐱?
+sort filename       alphabetically ascending order
+sort -r filename    descending order
+
+6. 𝐇𝐨𝐰 𝐭𝐨 𝐝𝐢𝐬𝐩𝐥𝐚𝐲 𝐔𝐍𝐈𝐐𝐔𝐄 𝐜𝐨𝐧𝐭𝐞𝐧𝐭 𝐟𝐫𝐨𝐦 𝐚 𝐟𝐢𝐥𝐞 𝐢𝐧 𝐋𝐢𝐧𝐮𝐱?
+uniq filename
+sort filename | uniq
+
+7. 𝐇𝐨𝐰 𝐭𝐨 𝐜𝐡𝐞𝐜𝐤 𝐲𝐨𝐮𝐫 𝐋𝐢𝐧𝐮𝐱 𝐅𝐢𝐥𝐞𝐒𝐲𝐬𝐭𝐞𝐦?
+Ans: lsblk -f
+
+8. How to copy files on to Remote Server?
+Ans: scp  
+scp target/chatbot.war @192.168.1.100:/app/tomcat9/webapps
+
+9.How do you delete 30 days old files?
+Ans: find /path/to/directory -type f -mtime +30 -delete
+
+10.Diff b/w chmod and chown?
+Ans: chmod - To Change the permissions of files and dircetories
+     chown - To Change the ownership of files and directories 
+
+
+useradd <username> To create user
+useradd u1 ; useradd u2 To create multiple users
+userdel -r <username> To delete user
+usermod -L <username> To Lock the user
+usermod -U <username> To unlock the user
+passwd <username> To create the password
+passwd -d <username> To remove the password
+getent passwd     To Check the users on linux system
+
+
+
+groupadd <groupname>  To create group
+gpasswd -M u1,u2 <groupname> To add users to group for first time    -M: The option to set the list of group members.
+gpasswd -a m1,m2 <groupname> To add users to group for second time   -a: The option to add a user to the group.
+groupdel <groupname> To delete the group
+gpasswd <groupname> To create the password
+gpasswd -r <groupname> To Remove the password
+getent group        To check the groups on linux system
+getent group groupname To check the users in particular group
+
+
+To Remove user from group
+gpasswd -d <user_name> <group_name>
+userdel <user_name> <group_name>
+
+
+Identify Large Files and Directories
+Remove Unnecessary Files
+Clear System Logs              sudo truncate -s 0 /var/log/syslog  sudo echo "" > /var/log/syslog
+Clean Package cache
+Resize Partitions
+Move Large Files and Directories
+Compress Files Or Directories   zip or tar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
