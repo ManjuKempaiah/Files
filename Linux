@@ -55,15 +55,15 @@ To check open ports on linux we can use netstat or ss(socket statistics) command
 netstat -tuln
 ss -tuln 
 
+How to redirect output to standard output and to a files?
 command | tee filename
 
 
-how to find file consuming more space
-
+how to find file consuming more space?
 du -a | sort -n -r | head -n 10
 
 
-How to find top 5 processes consuming more memory
+How to find top 5 processes consuming more memory?
 Bu using ps command along with sort and head command
 ps aux --sort=-%mem | head -n 5 
 
@@ -122,6 +122,7 @@ sudo vi sudo
 To allow specific user to use sudo add a line like this
 username ALL=(ALL:ALL) ALL
 
+usermod: The command used to modify a user account.
 
 Linux kernel is the core component of the linux operating system, managing system resources and providing communication between hardware and software.
 
