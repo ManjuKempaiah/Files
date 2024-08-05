@@ -1,0 +1,490 @@
+How to set up Kubernetes Cluster?
+
+Setup AWSCLI and IAM Role
+Create an IAM role for eks
+Install and configure eksctl
+Create EKS cluster
+Install and configure kubectl
+Deploy application
+
+-----------------------------------------------------------
+
+How to update particular Node in Kubernetes cluster?
+
+Determine the node group
+Update the Launch Template
+Update the node group
+Cordon the Node
+Drain the Node
+Terminate the Node
+
+----------------------------------------------------------
+
+What is Kubernetes and how Kubernetes works?
+
+Containers
+Cluster
+Master Node
+Worker Node
+Kubernetes APIs
+Controllers
+Scheduler
+Networking
+Storage
+Logging and Monitoring
+
+------------------------------------------------------------
+
+How to deploy an application in Kubernetes?
+
+Containerize your application
+Create Kubernetes manifests
+Deploy your application
+Monitor your application
+Update your application
+Handle storage
+Ensure Networking
+Set up Logging and Monitoring
+Implement security measures
+
+-----------------------------------------------------------
+
+How to deploy application using k8s and Argo CD?
+
+ Argo CD is a continuous delivery tool for Kubernetes that follows the GitOps methodology, meaning your Kubernetes manifests are stored in a Git repository.
+
+Prerequisites for deploying application using Kubernetes and Argo CD
+1.Kubernetes Cluster
+2.Argo CD installed
+3.Git Repository
+
+Install Argo CD
+Access Argo CD UI
+Get Argo CD Initial Admin Password
+Log in to Argo CD
+Create a Git Repository with Kubernetes Manifests
+Create an Argo CD Application
+
+In the Argo CD UI:
+
+Click on New App.
+
+Enter the 
+
+Application Name:
+Project:
+Sync Policy: 
+Repository URL:
+Access Argo CD UI
+Get Argo CD Initial Admin Password
+Revision: 
+Path:
+Cluster URL:
+Namespace:
+
+Sync the Application
+Monitor the Deployment
+
+-------------------------------------------------------------
+
+Types of Services In Kubernetes?
+
+1.NodePort
+2.LoadBalncer
+3.ClusterIp
+4.External name
+
+--------------------------------------------------------------
+
+Kubernetes Architecture?
+1.Master Node or Control Plane
+2.Worker Node or Data Node
+
+1.Master Node or Control Plane:
+
+1.Kube API server
+2.Kube Scheduler
+3.Controller Manager
+4.Etcd
+
+2.Worker Node or Data Node:
+
+1.Kube Proxy
+2.Kubelet
+3.Conatiner runtime
+a.Low level container run times(runc, continer-d)
+b.High level container run times(cri-o docker)
+c.sandbox and virtualized containers
+
+-------------------------------------------------------------
+What will you do if the disk is full?
+
+Identify Large Files and Directories
+Remove Unnecessary Files
+Clear System logs
+Clean Package Cache
+Resize Partitions
+Move Large Files or Directories
+Compress Large Files or Directories zip or tar
+
+------------------------------------------------------------
+
+How to secure, store credential in Jenkins?
+
+Credential Plugin
+Environment Variables
+Hashicorp Vault
+Third Party secrets management tools
+
+------------------------------------------------------------
+
+How to back Jenkins?
+
+Thin Backup
+
+Configuration folder
+Plugins
+Jobs
+User Content
+Database
+
+-----------------------------------------------------------
+
+How to Move Jenkins from one server to another server?
+
+Backup Jenkins Home Directory
+Install Jenkins on target server
+Transfer backed up Jenkins Home Directory
+Start Jenkins on new server
+Verify configuration and functionalities
+Monitor and Troubleshoot
+
+------------------------------------------------------------
+
+How to upgrade Jenkins?
+
+Backup Jenkins data
+Stop the Jenkins Service
+Choose Upgrade Method
+Package manager
+Manual Upgrade
+Upgrade Jenkins using yum
+Start the Jenkins
+Verify Upgrade
+Update Plugins
+Monitor and Trouble Shoot
+
+-------------------------------------------------------------
+
+How do you Monitor Jenkins?
+
+Jenkins Dashboard
+Build history
+Build Trend Analysis
+Job notifications
+Monitoring Plugins
+Job queues
+
+--------------------------------------------------------------
+
+How Jenkins pipeline Fail?
+
+Syntax error in Jenkins file
+Incorrect Credentials or Missing Credentials
+Environment Issues
+Incorrect Branch or Repository Configuration
+Incorrect usage of Plugins
+Resource limits
+
+---------------------------------------------------------------
+
+How to design well architecture in AWS?
+
+Reliability
+Performance Efficiency
+Security
+Cost Optimization
+Operational Excellence
+
+-----------------------------------------------------------------
+
+How to design highly available architecture in AWS?
+
+Use Multiple Availability zones
+Load Balancing
+Autoscaling
+Database Replication
+Distributed Storage
+Fault tolerant Architectures
+Monitoring and Alerting
+Disaster Recovery
+
+------------------------------------------------------------------
+
+Explain AWS Architecture in your Project?
+
+Core Components:
+
+VPC(Virtual Private Cloud)
+EC2(Elastic Compute Cloud)
+Relational Database
+S3
+EKS
+
+Networking and Security:
+
+Security Group
+NACL
+IAM
+Route 53
+
+Monitoring and Logging:
+
+CloudWatch
+CloudTrail
+
+Security and Compliance:
+
+KMS keys
+AWS WAF and WAF Shield 
+
+CI/CD and Automation:
+Jenkins
+
+Other Services:
+
+Lambda
+SQS
+SNS
+SES
+
+--------------------------------------------------------------
+
+EC2 Instance Families:
+
+General Purpose Instances
+Compute Optimized
+Memory Optimized
+Storage Optimized Instances
+Accelerated Computing
+
+-----------------------------------------------------------
+
+EC2 Instance Purchase Options:
+
+On-demand Instances
+Reserved Instances
+Scheduled Instances
+Dedicated Host
+Spot Instances
+Savings Plan
+
+-----------------------------------------------------------
+
+EBS Volume Types:
+
+1.SSD Volumes
+2.HDD Volumes
+3.Magnetic Storage
+
+
+1.SSD Volumes: Designed for Transactional Workloads
+a.General Purpose HDD Volumes(gp3,gp2)
+b.Provisioned iops HDD Volume(io2 block express,i02,i01)
+
+2.HDD Volumes: Designed for Streaming Workloads
+a.Throughput optimized HDD volumes
+b.Cold HDD volumes
+
+3.Magnetic Storage
+
+------------------------------------------------------------
+
+Load Balancer Types:
+
+1.Classic LoadBalancer
+2.Network LoadBalancer
+3.Gateway LoadBalancer
+4.Network LoadBalancer
+
+-------------------------------------------------------------
+
+AutoScaling Policies:
+
+1.Target Tracking
+2.Simple Scaling
+3.Step Scaling
+4.Scheduled Scaling
+5.Predictive Scaling
+
+--------------------------------------------------------------
+
+S3 Storage Classes
+
+1.Standard
+2.Reduced Redundancy
+3.Standard IA(Infrequently Accessed)
+4.Intellegent Tiering
+5.One Zone IA
+6.Glacier
+a.Glacier Instant Retrieval
+b.Glacier Flexible Retrieval
+c.Glacier Deep Archive
+
+-------------------------------------------------------------
+AWS Lambda:
+
+AWS lambda is a serverless compute service provided by AWS. It allows you to run code without provisioning or managing servers
+
+Features of AWS Lambda:
+
+1.Event driven execution
+2.Automatic Scaling
+3.Cost Efficiency
+4.Managed Service
+5.Support Multiple Languages
+
+-------------------------------------------------------------
+AWS Fargate:
+
+AWS Fargate is a serverless compute engine provided by AWS. It allows you to run code without prvisioning or managing servers
+
+Features of AWS Fargate:
+
+1.Compatible with Amazon ECS or Amazon EKS
+2.Serverless and pay-as-you-go
+3.Supports multiple CPU architectures and Operating Systems
+
+-------------------------------------------------------------
+
+How to Update Terraform Version:
+
+1.Download the new version
+2.Extract the Package
+3.Update Environment Variables
+4.Verify Installation
+
+-------------------------------------------------------------
+
+Terraform Modules:
+
+1.Root Module
+2.Child Modules
+3.Published Modules
+4.Using Modules
+5.Developing Modules
+
+Features of Terraform Module:
+
+1.Infrastructure Templating
+2.Reusable Infrastructure Components
+3.Application Deployment
+4.Compliance and Security
+5.Disaster Recovery and Backup
+6.Cloud Provider Abstraction
+
+--------------------------------------------------------------
+
+Features of Terraform:
+
+1.Multi Cloud Deployment
+2.Infrastructure Orchestration
+3.Immutable Infrastructure
+4.Infrastructure as a code
+5.CI/CD pipeline
+6.Environment Provisioning
+7.Resource Scaling and Management
+
+--------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
