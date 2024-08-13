@@ -334,7 +334,7 @@ c.Glacier Deep Archive
 -------------------------------------------------------------
 AWS Lambda:
 
-AWS lambda is a serverless compute service provided by AWS. It allows you to run code without provisioning or managing servers
+AWS lambda is a serverless compute service provided by AWS. It allows you to run code without provisioning or managing servers.
 
 Features of AWS Lambda:
 
@@ -347,7 +347,7 @@ Features of AWS Lambda:
 -------------------------------------------------------------
 AWS Fargate:
 
-AWS Fargate is a serverless compute engine provided by AWS. It allows you to run code without prvisioning or managing servers
+AWS Fargate is a serverless compute engine provided by AWS. It allows you to run code without prvisioning or managing servers.
 
 Features of AWS Fargate:
 
@@ -366,7 +366,9 @@ How to Update Terraform Version:
 
 -------------------------------------------------------------
 
-Terraform Modules:
+Terraform Modules: 
+
+In terraform module is a folder that conatians reusable terraform code such as locals, resources, data sources.
 
 1.Root Module
 2.Child Modules
@@ -374,7 +376,7 @@ Terraform Modules:
 4.Using Modules
 5.Developing Modules
 
-Features of Terraform Module:
+Uses cases of Terraform Module:
 
 1.Infrastructure Templating
 2.Reusable Infrastructure Components
@@ -396,6 +398,17 @@ Features of Terraform:
 7.Resource Scaling and Management
 
 --------------------------------------------------------------
+
+The Arguments Available with in a Life Cycle Block are:
+
+1.Create Before Destroy
+2.Prevent Destroy
+3.Ingnore Changes
+4.Replaced trrigered by
+
+---------------------------------------------------------------
+
+
 
 
 
