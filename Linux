@@ -180,6 +180,7 @@ Ans: find /path/to/directory -type f -mtime +30 -delete
 10.Diff b/w chmod and chown?
 Ans: chmod - To Change the permissions of files and dircetories
      chown - To Change the ownership of files and directories 
+     usermod - To modify the user account
 
 
 useradd <username> To create user
