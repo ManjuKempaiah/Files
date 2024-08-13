@@ -1,22 +1,27 @@
-FROM        -- Sepcefies the base image for the docker image
+FROM        -- Specifies the base image for the docker image
 WORKDIR     -- Sets the Working Directory inside the docker image
-RUN         -- RUN is the docker build time insntruction
+RUN         -- RUN is the docker build time instruction
 CMD         -- CMD is the docker run time instruction
 COPY        -- COPY copies files and folders from host machine to image
 ADD         -- ADD copies file and folders from host machine to image
                ADD have an extra capability, It Downloads the file from URL
                And also it auto extract the compressed file
 EXPOSE      -- Exposes port to the host machine
-CMD         -- CMD can be Overriden at run time
-ENTRYPOINT  -- ENTRYPOINT cannot be overriden at run, it is getting apended
+CMD         -- CMD can be Overridden at run time
+ENTRYPOINT  -- ENTRYPOINT cannot be overridden at run, it is getting appended
                CMD and ENTRYPOINT cab be used together
 ARG         -- ARG is the docker build time Argument
 ENV         -- ENV is the docker run time Argument
 LABEL       -- To add Metadata
 USER        -- To run application using specific user
-HEALTHCHECKS-- To check the health of the application 
+HEALTHCHECKS-- To check the health of the application
+. Indicates -- Current Directory as build context
+-d          -- Detached Mode(in the background)
+-it         -- Interactive Terminal(in the foreground)
+-itd        -- Interactive Terminal Detached Mode
+ 
 
----------------------------------------------------------
+-----------------------------------------------------------------------------------------
 
 FROM nginx:latest
 EXPOSE 80
@@ -44,7 +49,7 @@ WORKKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY server.js .
-EXPOSE 8080         Exposes ports to the host machine
+EXPOSE 8080
 CMD ["node","server.js"]
 
 
@@ -58,23 +63,60 @@ CMD [/tomcat/apache-tomcat-9.0.9/bin/catalina.sh]
 
 Extract the contents of the apache-tomcat-9.0.91.tar.gz archive.
 Remove the archive file after extraction to save space in the Docker image.
-----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+  labels:
+    app: my-app
+spec:
+  replicas: 3  # Desired number of pods
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-container
+        image: my-image
+        ports:
+        - containerPort: 80
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-deployment-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: my-deployment
+  minReplicas: 2  # Minimum number of pods
+  maxReplicas: 10  # Maximum number of pods
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50  # Target average CPU utilization
+-----------------------------------------------------------------------
 
 docker logs container_id
 docker stats
 docker exec -it container_id bash
 docker inspect container_id
 docker-compose up -d
-docker-compse ps
 docker network create --driver=bridge networkname
-docker info
-/var/lib/docker/volumes
 docker history image_id
-
 
 docker image prune -f
 docker system prune -f
-
 
 docker ps 
 docker ps -a
@@ -122,8 +164,12 @@ kubectl describe pod <pod_name>
 kubectl describe pod <pod_name> -c container_name
 kubectl describe pod <pod_name> -n namespace | grep "Restart Count"
 
+
 To find all pods across all namespaces that are not ready
 kubectl get pods -A | grep "0/"
+
+To find pods that are not ready
+kubectl get pods | grep "0/"
 
 To find all failed pods in the current namespace,
 kubectl get pods --field-selector=status.phase=Failed
@@ -135,6 +181,14 @@ kubectl get pods -A --field-selector=status.phase=Failed
 kubectl rollout status deployment deployment_name -n namespace
 kubectl rollout undo deployment deployment_name -n namespace
 kubectl rollout restart deployment deployment_name -n namespace
+
+kubectl rollout status deployment/your-deployment-name -n your-namespace
+kubectl rollout history deployment/your-deployment-name -n your-namespace
+kubectl rollout undo deployment/your-deployment-name -n your-namespace
+kubectl describe deployment your-deployment-name -n your-namespace
+kubectl rollout undo deployment/your-deployment-name -n your-namespace --to-revision=n
+
+kubectl scale deployment <deployment_name> -n <namespace> --replicas=3
 
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl edit svc/argocd-server -n argocd
