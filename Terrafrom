@@ -33,7 +33,23 @@ terraform workspace delete workspace_name
 terraform workspace show
 terraform workspace list
 
------------------------------------------------------------------------------------------
+terraform state pull
+
+The terraform state pull command is used to download the current state file from the remote backend (such as an S3 bucket) and display it in your terminal
+
+terraform state pull > backup.tfstate
+
+This command saves the state file as backup.tfstate in your local directory.
+
+-------------------------------------------------------------------------------
+
+The terraform state push command is used to manually upload a Terraform state file to a remote backend, replacing the current state file stored there
+
+terraform state push <path_to_state_file>
+
+terraform state push backup.tfstate
+
+----------------------------------------------------------------------------------
 	
 provider "aws" {
   region = "eu-north-1"
@@ -55,19 +71,19 @@ resource "aws_vpc" "main" {
   instance_tenancy = "default"
 
   tags = {
-    Name = "main"
+    Name = "manju-vpc"
   }
 }
 
 -----------------------------------------------------------------
 
 resource "aws_subnet" "main" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.0.0/24"
+  vpc_id           = aws_vpc.main.id
+  cidr_block       = "10.0.0.0/24"
   availabilty_zone = "eu-north-1a"
 
   tags = {
-    Name = "Main"
+    Name = "manju-subnet"
   }
 }
 
@@ -84,7 +100,7 @@ resource "aws_instance" "main" {
 
 
  tags = {
-    Name = "main"
+    Name = "manju-instance"
   }
 }
 
@@ -94,7 +110,7 @@ resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "main"
+    Name = "manju-internet_gateway"
   }
 }
 
@@ -109,7 +125,7 @@ resource "aws_route_table" "main" {
   }
 
   tags = {
-    Name = "main"
+    Name = "manju-internet_gateway"
   }
 }	
 
@@ -117,8 +133,7 @@ resource "aws_route_table" "main" {
 
 
 resource "aws_route_table_association" "main" {
-  count          = length(local.az_names)
-  subnet_id      = aws_subnet.main[count.index].id
+  subnet_id      = aws_subnet.main.id
   route_table_id = aws_route_table.main.id
 }
 
