@@ -41,6 +41,7 @@ Containerize your application
 Create Kubernetes manifests
 Deploy your application
 Monitor your application
+Scale your application
 Update your application
 Handle storage
 Ensure Networking
@@ -51,7 +52,7 @@ Implement security measures
 
 How to deploy application using k8s and Argo CD?
 
- Argo CD is a continuous delivery tool for Kubernetes that follows the GitOps methodology, meaning your Kubernetes manifests are stored in a Git repository.
+Argo CD is a continuous delivery tool for Kubernetes that follows the GitOps methodology, meaning your Kubernetes manifests are stored in a Git repository.
 
 Prerequisites for deploying application using Kubernetes and Argo CD
 1.Kubernetes Cluster
