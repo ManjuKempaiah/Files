@@ -475,9 +475,21 @@ spec:
       claimName: my-pvc   # Name of the PersistentVolumeClaim
 
 --------------------------------------------------------------------------------------------------------------------
+Core API Group (v1)
+Extended API Group (apps/v1)
+
+v1: Used for core, stable, and essential resources like Pods, Services, ConfigMaps, etc., which are part of Kubernetes' fundamental operations.
+
+apps/v1: Used for more complex, application-related resources like Deployments, StatefulSets, and DaemonSets, which are managed separately to allow for greater flexibility and evolution.
 
 
+-------------------------------------------------------------------------------------------------------------------
+Recursively
 
+-r: Primarily used in commands like rm and cp for recursive operations, and it usually has the same meaning as -R.
+-R: Also used for recursive operations but is more commonly used in commands like chmod and chown for recursively changing permissions or ownership.
+
+--------------------------------------------------------------------------------------------------------------------------
 
 
 
