@@ -160,6 +160,22 @@ pipeline{
 	}
 }
 
+ pipeline{
+ agent any
+ stages{
+ stage('Hello World'){
+ steps{
+ echo 'ManjuKempaiah'
+ }
+ }
+ stage('Trigger The Job'){
+ steps{
+ build('jobname')
+ }
+ }
+ }
+ }
+
 
 pipeline{
     agent any
