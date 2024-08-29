@@ -138,3 +138,66 @@ resource "aws_route_table_association" "main" {
 }
 
 --------------------------------------------------------------------------
+
+resource "aws_ec2_transit_gateway" "main" {
+  description = "main"
+
+  tags = {
+  Name = "manju-transit_gateway"
+  }
+}
+
+--------------------------------------------------------------------------
+Resources you've created using Terraform:
+
+1.Networking Components:
+
+1.VPCs (Virtual Private Clouds)
+2.Subnets
+3.Route Tables and Associations
+4.Security Groups and Network ACLs
+
+2.Compute Resources:
+
+1.EC2 Instances
+2.Auto Scaling Groups:
+3.Lambda Functions
+
+3.Storage Resources:
+
+1.S3 Buckets
+2.EBS Volumes
+
+4.Database Services:
+
+1.RDS Instances
+2.DynamoDB Tables
+
+5.IAM and Security:
+
+1.IAM Roles, Policies, and Users
+
+6.Load Balancing and Distribution:
+
+1.Elastic Load Balancers
+2.Route 53
+
+--------------------------------------------------------------------------
+Types of pipelines you're handling in your project:
+
+1.CI/CD Pipelines
+
+a.Continuous Integration (CI) Pipelines
+b.Continuous Deployment (CD) Pipelines
+
+2.Infrastructure as Code (IaC) Pipelines
+3.Release Pipelines
+4.Security and Compliance Pipelines
+5.Data Pipelines
+6.Monitoring and Alerting Pipelines
+7.Migration and Backup Pipelines
+
+60 + Pipelines
+
+-------------------------------------------------------------------------
+
