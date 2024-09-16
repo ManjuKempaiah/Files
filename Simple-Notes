@@ -464,6 +464,23 @@ Resources you've created using Terraform:
 
 ------------------------------------------------------------
 
+Summary of the Deployment Stages Order
+
+1. Development: Initial coding and unit testing.
+2. Testing: Automated and integration testing to catch functional issues.
+3. UAT (User Acceptance Testing): Validation by end-users or business stakeholders.
+4. Staging: Pre-production environment for final testing under conditions similar to production.
+5. Production: Live environment where the application is used by real users.
+
+--------------------------------------------------------------
+
+We have developments branch for dev activities, test branch for test activities, release branch for doing particular release and feature branches for adding new features to the system.
+
+
+We use one VPC for one environment. Development has a separate one. Testing has a separate one. UAT has a separate one. stage has a separate one Production has a separate one. We are segregating them with TerraForm workspaces.
+
+---------------------------------------------------------------
+
 
 
 
