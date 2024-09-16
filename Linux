@@ -33,6 +33,9 @@ pgrep <process_name>
 
 kill PID --- To Kill a process
 
+head -n 5 filename
+tail -n 5 filename 
+
 
 uname -r ---- to check the kernel version on linux 
 uname -a 
