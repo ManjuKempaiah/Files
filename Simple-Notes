@@ -118,15 +118,58 @@ b.High level container run times(cri-o docker)
 c.sandbox and virtualized containers
 
 -------------------------------------------------------------
+
+How does kubernetes achive high availability?
+
+Replicaset and Deployments
+LoadBalancing
+Pod distruption budget
+
+-------------------------------------------------------------
+
+Your application experiences traffic spikes.How would you handle aitomatic scaling in kubernetes?
+
+Horizontal Pod Autoscaler(HPA)
+Cluster Autoscaler:
+Automatically scales the number of nodes in the cluster based on the demand
+
+-------------------------------------------------------------
+
+How do you optimise the performance of a kubernetes application?
+
+Resource requests and limits:
+Set appropriate resource requsets and limits for pods.
+
+Horizontal Pod Autoscaler:
+Horizontal Pod Autoscaler automatically scales the number of pods in a deployment,replicaset or stateful set based on the observed cpu utilization or custom metrics.
+
+Efficient Image Building:
+Create minimal container image to reduce startup time.
+
+Network optimization:
+Use network policies and service types effectively.
+
+-------------------------------------------------------------
+
 What will you do if the disk is full?
 
 Identify Large Files and Directories
+
+How do you optimise the performance of a kubernetes application?
+
+Resource requests and limits:
+Set appropriate resource requsets and limits for pods
+
+Horizontal Pod Autoscaler:
+Horizontal Pod Autoscaler automatically scales the number of pods in a deployment,replicaset or stateful set based on the observed cpu utilization or custom metrics.
+
+
 Remove Unnecessary Files
 Clear System logs
 Clean Package Cache
 Resize Partitions
 Move Large Files or Directories
-Compress Large Files or Directories zip or tar
+Compress Large Files or Directories using zip or tar
 
 ------------------------------------------------------------
 
@@ -177,13 +220,29 @@ Monitor and Trouble Shoot
 
 -------------------------------------------------------------
 
-How do you Monitor Jenkins?
+How do you Monitor Jenkins and its jobs?
 
 Jenkins Dashboard
 Build history
 Build Trend Analysis
 Job notifications
 Monitoring Plugins
+Job queues
+
+--------------------------------------------------------------
+
+Features of Jenkins
+
+Extensibilty and Pugins
+Distributed Build
+MasterSlave Architecture
+Pipeline as a code
+Integration with various tools
+Job Notification
+Monitoring
+Security and Features
+Support for containerization
+Support Parallel stages or Parallel pipelines
 Job queues
 
 --------------------------------------------------------------
@@ -198,6 +257,7 @@ Incorrect usage of Plugins
 Resource limits
 Network Issues
 Duplicate Stage Names
+If the agent or node is offline
 
 ----------------------------------------------------------------
 Types of pipelines you're handling in your project:
@@ -234,7 +294,7 @@ Use Multiple Availability zones
 Load Balancing
 Autoscaling
 Database Replication
-Distributed Storage
+Distributed Data Storage
 Fault tolerant Architectures
 Monitoring and Alerting
 Disaster Recovery
@@ -263,11 +323,6 @@ Monitoring and Logging:
 CloudWatch
 CloudTrail
 
-Security and Compliance:
-
-KMS keys
-AWS WAF and WAF Shield 
-
 CI/CD and Automation:
 Jenkins
 
@@ -277,6 +332,11 @@ Lambda
 SQS
 SNS
 SES
+
+Security and Compliance:
+
+KMS keys
+AWS WAF and WAF Shield 
 
 --------------------------------------------------------------
 
@@ -481,7 +541,9 @@ We use one VPC for one environment. Development has a separate one. Testing has 
 
 ---------------------------------------------------------------
 
+Infrastructure and Transportation(Highways England)
 
+---------------------------------------------------------------
 
 
 
