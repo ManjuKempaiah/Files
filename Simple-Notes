@@ -70,9 +70,7 @@ In the Argo CD UI:
 
 Click on New App.
 
-Enter the 
-
-Application Name:
+Enter the Application Name:
 Project:
 Sync Policy: 
 Repository URL:
@@ -151,10 +149,6 @@ Use network policies and service types effectively.
 
 -------------------------------------------------------------
 
-What will you do if the disk is full?
-
-Identify Large Files and Directories
-
 How do you optimise the performance of a kubernetes application?
 
 Resource requests and limits:
@@ -163,7 +157,11 @@ Set appropriate resource requsets and limits for pods
 Horizontal Pod Autoscaler:
 Horizontal Pod Autoscaler automatically scales the number of pods in a deployment,replicaset or stateful set based on the observed cpu utilization or custom metrics.
 
+-------------------------------------------------------------
 
+What will you do if the disk is full?
+
+Identify Large Files and Directories
 Remove Unnecessary Files
 Clear System logs
 Clean Package Cache
