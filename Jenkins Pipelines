@@ -3,7 +3,99 @@ agent any: Execute pipeline on any any available agent in Jenkins environment.
 stages: Defines the stages of the Pipeline.
 stage('Install Docker'): Defines a stage named "Install Docker".
 steps: Contains the steps to be executed within this stage.
-script: Allows running shell scripts within the Pipeline.
+script: Allows running shell scripts within the Pipeline. 
+
+--------------------------------------------------------
+
+Docker Dev Deploy
+
+pipeline{
+	agent any
+	stages{
+	stage('Checkout The Code'){
+	steps{
+	git branch:'main', credentialsId:'git-ManjuKempaiah', url:'https://github.com/ManjuKempaiah/python-app'
+	}
+	}
+	stage('Maven Build'){
+	steps{
+	sh 'mvn clean package'
+	}
+	}
+	stage('SonarQube Analysis'){
+	steps{
+	withSonarQubeEnv('sonar10'){
+	sh 'mvn sonar:sonar'
+	}
+	}
+	}
+	stage('SonarQube Analysis Status'){
+	steps{
+	script{
+	def qg = waitForQualityGate()
+	if (qg.status != 'OK'){
+	error "Sonar Analysis Failed"
+	}
+	}
+	}
+	}
+	stage('Docker Build'){
+	steps{
+	sh 'docker build -t manjukempaiah/pythonapp:0.0.1 .'
+	}
+	}
+	stage('Docker Push'){
+	steps{
+	withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'pwd', usernameVariable: 'user')]) {
+	sh "docker login -u ${user} -p ${pwd}"
+	sh "docker push manjukempaiah/pythonapp:0.0.1"
+	}
+	}
+	}
+	stage('Docker Dev Deploy'){
+	steps{
+	sshagent(['docker-ssh']){
+	sh "ssh -o StrictHostKeyChecking=no ec2-user@192.1.168.100 docker rm -f pythonapp"
+	sh "ssh ec2-user@192.168.100 docker run -d -p 8080:5000 --name pythonapp manjukempaiah/pythonapp:0.0.1"
+	}
+	}
+	}
+	}
+}
+
+--------------------------------------------------------
+Copy War File To Tomcat Server
+pipeline{
+    agent any
+    stages{
+        stage("Git Checkout"){
+            steps{
+                git branch:'main',credentialsId:'git-ManjuKempaiah',url:'https://github.com/ManjuKempaiah/chattakkar'
+            }
+        }
+        stage("Maven Build"){
+            steps{
+                sh 'mvn clean package'
+            }
+        }
+        stage("Tomact Delpoy"){
+            steps{
+                //install sshagent
+                sshagent(['tomcat-dev']){
+                    // copy warfile to tomcat-dev
+                    sh "scp target/chattakkar.war ec2-user@172.31.47.249:/opt/tomcat9/webapps"
+                    // restart tomcat
+                    sh "ssh ec2-user@172.31.47.249 /opt/tomcat9/bin/shutdown.sh"
+                    sh "ssh ec2-user@172.31.47.249 /opt/tomcat9/bin/startup.sh"
+                }
+            }
+        }
+    }
+}
+
+--------------------------------------------------------
+
+Pipeline To Install Nginx
 
 pipeline{
 	agent any
@@ -33,6 +125,10 @@ pipeline{
 	}
 }
 
+--------------------------------------------------------
+
+Pipeline To Install Node.js
+
 pipeline{
 	agent any
 	environment{
@@ -60,6 +156,10 @@ pipeline{
 	}
 }
 
+--------------------------------------------------------
+
+Pipeline To Install Docker
+
 pipeline{
 	agent any
 	stages{
@@ -78,6 +178,9 @@ pipeline{
 	}
 }
 
+--------------------------------------------------------
+
+Pipeline To Install Ansible
 
 pipeline{
 	agent any
@@ -95,6 +198,9 @@ pipeline{
 	}
 }
 
+--------------------------------------------------------
+
+Parallel Satges or Parallel Blocks
 
 pipeline{
 	agent any
@@ -116,6 +222,9 @@ pipeline{
 	}
 }
 
+--------------------------------------------------------
+
+Agent Block
 
 pipeline{
 	agnet none
@@ -139,6 +248,9 @@ pipeline{
 	}
 }
 
+--------------------------------------------------------
+
+Node Block
 
 pipeline{
 	agent none
@@ -160,6 +272,10 @@ pipeline{
 	}
 }
 
+--------------------------------------------------------
+
+Trigger The Job
+
  pipeline{
  agent any
  stages{
@@ -176,45 +292,9 @@ pipeline{
  }
  }
 
+--------------------------------------------------------
 
-pipeline{
-    agent any
-    stages{
-        stage("SCM"){
-            steps{
-                git branch:'main', credentialsId:'git-ManjuKempaiah', url:'https://github.com/ManjuKempaiah/chatboy'
-            }
-        }
-        stage("Maven and sonar"){
-            parallel{
-                stage("Maven Package"){
-                    steps{
-                        sh 'mvn clean package'       
-                    }
-                }
-                stage("Sonar Analysis"){
-                    steps{
-                        withSonarQubeEnv('sonar10'){  
-                            sh 'mvn sonar:sonar'      
-                        }
-                    }
-                }
-            }
-        }
-        stage("Sonar Status"){
-            steps{
-                script{
-                    def qg = waitForQualityGate()
-                    if (qg.status != 'OK'){
-                        error "Sonar Analysis failed..."
-                    }
-                }
-            }
-        }
-    }
-}
-
---------------------------------------------------------------------------------------------------------------------
+SonarQube Analysis With Parallel Stages
 
 pipeline{
 	agent any
@@ -244,6 +324,48 @@ pipeline{
 	stage('SonarQube Status'){
 	steps{
 	script{
+        def qg = waitForQualityGate()
+	if (qg.status != 'OK'){
+	error "Sonar Analysis Failed"
+        }
+	}
+	}
+	}
+	}
+}
+
+--------------------------------------------------------
+
+SonarQube Analysis
+
+pipeline{
+	agent any
+	environment{
+	GIT_BRANCH = "main"
+	GIT_CREDS = "git-ManjuKempaiah"
+	GIT_URL = "https://github.com/ManjuKempaiah/chatbot"
+	}
+	stages{
+	stage('Checkout The Code'){
+	steps{
+	git branch: GIT_BRANCH, credentialsId: GIT_CREDS, url: GIT_URL
+	}
+	}
+	stage('Maven Build'){
+	steps{
+	sh 'mvn clean package'
+	}
+	}
+	stage('SonarQube Analysis'){
+	steps{
+	withSonarQubeEnv('sonar10'){
+	sh 'mvn sonar:sonar'
+	}
+	}
+	}
+	stage('SonarQube Analysis Status'){
+	steps{
+	script{
 	def qg = waitForQualityGate()
 	if (qg.status != 'OK'){
 	error "Sonar Analysis Failed"
@@ -254,17 +376,27 @@ pipeline{
 	}
 }
 
---------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------
 
-sh 'mvn clean package': Executes the Maven command in a shell.
-sh 'mvn sonar': Executes the SonarQube analysis command in a shell.
-withSonarQubeEnv('sonar10'): Sets up the environment for SonarQube analysis using the configuration named sonar10.
+Upstream
 
-Sonar Status Stage: This stage checks the result of the SonarQube quality gate.
-script block: Allows for running arbitrary Groovy code within the pipeline.
-waitForQualityGate(): Waits for the quality gate result from SonarQube.
-if (qg.status != 'OK'): Checks if the quality gate status is not OK. If it is not OK, the pipeline will fail with an error message ("Sonar Analysis failed...").
---------------------------------------------------------------------------------------------------------------------------
+pipeline {
+    agent any
+    triggers {
+      upstream 'ai-app-ci-cd'
+    }
+
+    stages {
+        stage('Selenium Testing') {
+            steps {
+                echo 'Hello Selenium testing'
+            }
+        }
+    }
+}
+
+--------------------------------------------------------
+
 Here's a simple shell script to print "Hello, World!" to the terminal
 
 #!/bin/bash
@@ -272,6 +404,57 @@ Here's a simple shell script to print "Hello, World!" to the terminal
 # Shell script to print Hello, World!
 echo "Hello, World!"
 
---------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------
 
 The shebang line in a shell script is a special character sequence (#!) followed by the path to the interpreter that should execute the script. It is used to specify which interpreter should be used to parse and execute the script. This line must appear as the very first line in the script file.
+
+--------------------------------------------------------
+Shebang line:
+
+ Path to the interpreter that should execute the script.
+
+-y: Automatically answers "yes" to any prompts during the installation.
+-f: Forces the pruning action without prompting for confirmation.
+The -i option in the ssh command stands for identity file.
+
+--------------------------------------------------------
+Core API Group (v1)
+Extended API Group (apps/v1)
+
+v1: Used for core, stable, and essential resources like Pods, Services, ConfigMaps, etc., which are part of Kubernetes' fundamental operations.
+
+apps/v1: Used for more complex, application-related resources like Deployments, StatefulSets, and DaemonSets, which are managed separately to allow for greater flexibility and evolution.
+
+--------------------------------------------------------
+Recursively
+
+-r: Primarily used in commands like rm and cp for recursive operations, and it usually has the same meaning as -R.
+-R: Also used for recursive operations but is more commonly used in commands like chmod and chown for recursively changing permissions or ownership.
+
+--------------------------------------------------------
+Environmental Variable in Jenkins are key-value pairs used to pass information to jobs,pipelines,scripts during the build process
+
+--------------------------------------------------------
+
+We have developments branch for dev activities, test branch for test activities, release branch for doing particular release and feature branches for adding new features to the system.
+
+
+We use one VPC for one environment. Development has a separate one. Testing has a separate one. UAT has a separate one. stage has a separate one Production has a separate one. We are segregating them with TerraForm workspaces.
+
+--------------------------------------------------------
+
+Path to the interpreter that should execute the script.
+--------------------------------------------------------
+Environmental Variable in Jenkins are key-value pairs used to pass 
+information to jobs,pipelines,scripts during the build process.
+--------------------------------------------------------
+A hypervisor is software that creates and manages virtual 
+machines by allocating hardware resources to them.
+--------------------------------------------------------
+Control Node is the server where the ansible is installed.
+--------------------------------------------------------
+Manging Node is the server that is configured using ansible.
+--------------------------------------------------------
+Virtualization is the process of creating virtual versions of 
+computing resources, such as servers, storage, or networks.
+--------------------------------------------------------
