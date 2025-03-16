@@ -38,14 +38,14 @@ RUN apk add python3
 RUN apk add py3-pip
 WORKDIR /app
 COPY requirements.txt .
-RUN pip3 insntall requirements.txt
+RUN pip3 install -r requirements.txt
 COPY app.py .
 EXPOSE 80
 CMD ["python3","app.py"]
 
 
 FROM node:18
-WORKKDIR /app
+WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY server.js .
@@ -56,10 +56,10 @@ CMD ["node","server.js"]
 FROM alpine:3.18.2
 RUN apk add openjdk11
 WORKDIR /tomcat
-ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.90/bin/apache-tomcat-9.0.90.tar.gz .
-RUN tar xf apache-tomcat-9.0.90.tar.gz && rm apache-tomcat-9.0.90.tar.gz
+ADD https://downloads.apache.org/tomcat/tomcat-9/v9.0.102/bin/apache-tomcat-9.0.102.tar.gz .
+RUN tar xf apache-tomcat-9.0.102.tar.gz && rm apache-tomcat-9.0.102.tar.gz
 EXPOSE 8080
-CMD [/tomcat/apache-tomcat-9.0.9/bin/catalina.sh]
+CMD [/tomcat/apache-tomcat-9.0.102/bin/catalina.sh, "run"]
 
 Extract the contents of the apache-tomcat-9.0.91.tar.gz archive.
 Remove the archive file after extraction to save space in the Docker image.
@@ -112,7 +112,10 @@ docker stats
 docker exec -it container_id bash
 docker inspect container_id
 docker-compose up -d
-docker network create --driver=bridge networkname
+docker-compose ps
+docker network create --driver=bridge network_name
+docker network list
+docker network inspect network_name
 docker history image_id
 
 docker image prune -f
@@ -122,29 +125,69 @@ docker ps
 docker ps -a
 docker rm container_id
 docker rm -f container_id
-docker rm -f $(docker ps -aq)
-docker ps --filter="status=exited" -q
+docker rm -f $(docker ps -aq)    (removes all the containers including running and exited)   (-aq --- all conatiner_ids)
+docker ps --filter="status=exited" -q                                                       (-q --- container_ids)
 docker ps -f="status=exited" -q
 docker ps -f "status=exited" -q
 docker rm -f $(docker ps --filter="status=exited" -q)
+docker rm -f $(docker ps --filter="status=running" -q)
 
 docker images
 docker rmi imageid
 docker rmi -f imageid
-docker rmi -f $(docker images -q)
+docker rmi -f $(docker images -q) (removes all the images including dangling and non-dangling)
 docker images --filter="dangling=true" -q
 docker images -f="dangling=true" -q
 docker images -f "dangling=true" -q
 docker rmi -f $(docker images --filter="dangling=true" -q)
+docker rmi -f $(docker images --filter="dangling=false" -q)
+
+docker volume create jenkins
+docker volume inspect jenkins
+docker volume ls
+
+docker info
+docker login -u user_name
+docker push user_name/<image_name>:<tag>
+docker pull <image_name>
+printenv
+exit
+
+docker stop container_id
+docker rm container_id
+docker kill container_id
+
+/var/lib/docker/volumes  --- Docker Volumes are stored in
+
+
+To copy a file or directory from the host machine to a running Docker container
+docker cp <source_file_path> <container_name>:<container_file_path>
+
+To copy a file from a running Docker container to the host machine
+docker cp <container_name>:<container_file_path> <host_file_path>
+
+
 
 docker build -t manjukempaiah/<image_name>:<tag> .
 docker run -d -p <host_port>:<container_port> --name container_name <image_name>:<tag>
 
 docker run -it -e CONFIG_FILE="/app/prod.config" manjukempaiah/tomcat:0.0.1 
 docker run -it --env-file ./manju.env manjukempaiah/tomcat:0.0.1
-docker build -t manjukempaiah/tomcat:0.0.1 . --build-arg JAVA_PKG=openjdk11
 
--------------------------------------------------------------------------------------------------------------
+docker build -t manjukempaiah/tomcat:0.0.1 . --build-arg JAVA_PKG=openjdk8 
+
+---------------------------------------------------------------------
+
+git init
+git clone https://github.com/ManjuKempaiah/docker-repo.git
+cd docker-repo
+ls 
+
+----------------------------------------------------------------------
+
+kubectl run myapp --image=nginx --port=80
+kubectl run nodeapp --image=manjukempaiah/node-web-app --port=8080
+kubectl expose pods/myapp --type="NodePort" --port 8080
 
 eksctl create cluster --name=jhc-aug-dev
 eksctl delete cluster --name=jhc-aug-dev 
@@ -154,9 +197,13 @@ kubectl create -f pods.yml
 kubectl apply -f pods.yml
 kubectl delete -f pods.yml
 
+The -f flag in the kubectl command stands for file
+
+
 kubectl logs <pod_name>
 kubectl logs <pod_name> -c conatiner_name
 kubectl exec -it <pod_name> -- /bin/bash
+kubectl exec -it pod_name -c container_name -- /bin/bash
 kubectl get pods -o wide
 
 
@@ -178,23 +225,34 @@ To find failed pods across all namespaces, add the -A flag:
 kubectl get pods -A --field-selector=status.phase=Failed
 
 
+kubectl describe deployment deployment_name -n namespace
+
+
 kubectl rollout status deployment deployment_name -n namespace
 kubectl rollout undo deployment deployment_name -n namespace
+kubectl rollout undo deployment deployment_name -n namespace --to-revision=n
 kubectl rollout restart deployment deployment_name -n namespace
+kubectl rollout history deployment deployment_name -n namespace
+
+
+kubectl scale deployment <deployment_name> -n <namespace> --replicas=3
+
 
 kubectl rollout status deployment/your-deployment-name -n your-namespace
 kubectl rollout history deployment/your-deployment-name -n your-namespace
 kubectl rollout undo deployment/your-deployment-name -n your-namespace
-kubectl describe deployment your-deployment-name -n your-namespace
 kubectl rollout undo deployment/your-deployment-name -n your-namespace --to-revision=n
+kubectl rollout restart deployment/your-deployment-name -n your-namespace
 
-kubectl scale deployment <deployment_name> -n <namespace> --replicas=3
 
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl edit svc/argocd-server -n argocd
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
-
+sudo vi deployment.yml
+esc Shit+: wq
+10 dd to delete lines in the file
+cat deployment.yml To show content in the file
 ----------------------------------------------------------------------------------------------
 
 Nginx playbook
@@ -225,9 +283,58 @@ Nginx playbook
         name: nginx
         state: restarted
 
-Copying the nginx.conf file from the current machine to the /etc/nginx/nginx.conf directory on the target machine ensures that the Nginx server on the target machine is configured according to the specifications defined in the nginx.conf file.        
+Copying the nginx.conf file from the current machine to the /etc/nginx/nginx.conf directory on the target machine ensures that the Nginx server on the target machine is configured according to the specifications defined in the nginx.conf file.
+
+This triggers the restart nginx handler whenever the file is changed.
+Handlers run only if the task makes changes (e.g., if nginx.conf is modified).
 
 --------------------------------------------------------------------------------------------------------------------
+
+Apache playbook
+
+- hosts: 172.31.36.99
+  become: True
+  tasks:
+    - name: install apache
+      yum:
+        name: httpd
+        state: present
+    - name : put sample html file on apache
+      copy:
+        src: index.html
+        dest: /var/www/html
+    - name: start and enable apache
+      service:
+        name: httpd
+        state: started
+        enabled: True     
+-----------------------------------------------------------------------------------------------------------------
+Ansible tags
+
+- hosts: web
+  become: True
+  tasks:
+    - name: Install apache
+      yum:
+        name: httpd
+        state: present
+      tags:
+          - install
+    - name: put sample html file on apache
+      copy:
+        src: index.html
+        dest: /var/www/html/
+      tags:
+          - deploy
+    - name: start and enable apache
+      service:
+        name: httpd
+        state: started
+        enabled: True
+      tags:
+          - start
+
+-------------------------------------------------------------------------------------------------------------------
 
 Can you please write ansible playbook conditionally install a package,if it is linux how to install package,if it is ubuntu how to install a package.
 
@@ -245,7 +352,7 @@ Can you please write ansible playbook conditionally install a package,if it is l
         state: present
       when: ansible_facts['os_family'] == "Debian"
 
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 
 Docker install
 
@@ -264,10 +371,10 @@ Docker install
         name: docker
         state: started
 
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 
 node.js install 
-
+  
 - name: Install Node.js
   hosts: your_target_hosts
   become: yes
@@ -288,7 +395,7 @@ node.js install
         state: present
       when: ansible_distribution == 'Amazon'
 
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 
 Copy file from EC2 to target machine
 
@@ -302,7 +409,7 @@ Copy file from EC2 to target machine
         dest: /path/to/destination/folder/on/target_machine
 
 
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 
 pods.yml
 
@@ -326,13 +433,22 @@ spec:
       ports:
         - containerPort: 80
 
+------------------------------------------------------------------------
+
+ports: Specifies the ports to expose on the container.
+
+containerPort: 80: Exposes port 80 on the container.        
+
 resources: Defines the resource requirements and limits for the container.
 
 requests: Specifies the minimum amount of resources the container needs.
 
 limits: Sets upper limits on the resources the container can consume.
 
---------------------------------------------------------------------------------------------------------------------
+Mibs
+Millicourse
+
+-------------------------------------------------------------------------------------------------------------------
 
 nginxsvc.yml
 
@@ -349,13 +465,16 @@ spec:
       nodePort: 30000
   type: LoadBalancer
 
+--------------------------------------------------
+ports: Specifies the ports to open on the Service.
+
 port: 80: Defines that the Service should listen on port 80.
 
 targetPort: 80: Specifies that the traffic should be forwarded to Pods on port 80.
 
 nodePort: 30000: Opens a specific port on all nodes in the cluster, allowing external traffic to reach the Service.
 
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 
 ReplicaSet
 
@@ -380,7 +499,7 @@ spec:
         ports:
         - containerPort: 80
 
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 
 Deployment
 
@@ -408,7 +527,7 @@ spec:
         ports:
         - containerPort: 8080
 
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 
  Rolling Updates
 
@@ -440,7 +559,7 @@ spec:
 maxSurge: Represents the maximum number or percentage of Pods that can be created above the desired number of replicas during an update. Here, it is set to 25%.
 maxUnavailable: Represents the maximum number or percentage of Pods that can be unavailable (not running) during an update. Here, it is set to 25%.
 
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 
 apiVersion: apps/v1
 kind: Deployment
@@ -474,7 +593,8 @@ spec:
     persistentVolumeClaim:
       claimName: my-pvc   # Name of the PersistentVolumeClaim
 
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+
 Core API Group (v1)
 Extended API Group (apps/v1)
 
@@ -482,14 +602,173 @@ v1: Used for core, stable, and essential resources like Pods, Services, ConfigMa
 
 apps/v1: Used for more complex, application-related resources like Deployments, StatefulSets, and DaemonSets, which are managed separately to allow for greater flexibility and evolution.
 
+------------------------------------------------------------------------------------------------------------------
 
--------------------------------------------------------------------------------------------------------------------
-Recursively
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeapp
+spec:
+  replicas: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: nodeapp
+  template:
+    metadata:
+      labels:
+        app: nodeapp
+    spec:
+      containers:
+        - name: nodeapp
+          image: nodeapp
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+              ports:
+                - containerPort: 8080
+              volumeMounts:
+                - name: data-volume
+                  mountPath: /app/data
+  volumes:
+    - name: data-volume
+      persistentVolumeClaim:
+        claimName: my-pvc
+--------------------------------------------------------------------------------------------------------------
 
--r: Primarily used in commands like rm and cp for recursive operations, and it usually has the same meaning as -R.
--R: Also used for recursive operations but is more commonly used in commands like chmod and chown for recursively changing permissions or ownership.
+apiVersion: apps/v2
+kind: ReplicaSet
+metadata:
+  name: nginx
+spec:
+  replicas: 5
+  selector:
+    matchExpressions:
+      - {key: app, opertaor: In, values: [nginx]}
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+------------------------------------------------------------------------------------------------------------------
 
---------------------------------------------------------------------------------------------------------------------------
+withcredentials: Bind credentials to variables
 
+Username and password(separated)
+Username Varible: user
+Password Variable: pwd
 
+sshagent: SSH Agent
 
+sshagent(['docker-ssh']) {
+    // some block
+}
+
+-o StrictHostKeyChecking=no
+
+sh "" --> Is Very Important to Perform script on remote shell
+
+To Build Docker Image,Push,and RUN we need install docker on jenkins server
+
+sudo yum install docker -y
+sudo sytemctl start docker
+sudo sytemctl status docker
+sudo sytemctl enable docker
+sudo usermod -a -G docker jenkins
+sudo systemctl restart jenkins
+
+Docker public_ip:8080
+
+8080:5000
+hosport containerport
+
+-------------------------------------------------------------------------------
+
+pipeline{
+    agent any
+    stages{
+        stage('Checkout The Code'){
+            steps{
+                git branch:'master', credentialsId:'git-ManjuKempaiah', url:'https://github.com/ManjuKempaiah/python-app'
+            }
+        }
+        stage('Docker Build'){
+            steps{
+                sh 'docker build -t manjukempaiah/pyapp:0.0.1 .'
+            }
+        }
+        stage('Docker Hub Push'){
+            steps{
+               withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'pwd', usernameVariable: 'user')]) {
+             sh "docker login -u ${user} -p ${pwd}"
+             sh "docker push manjukempaiah/pyapp:0.0.1"
+             } 
+            }
+        }
+        stage('Dcoker Dev Deploy'){
+            steps{
+                sshagent(['docker-ssh']) {
+              sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.34.174 docker rm -f pyapp"
+              sh "ssh ec2-user@172.31.34.174 docker run -d -p 8080:5000 --name pyapp manjukempaiah/pyapp:0.0.1"
+             }
+            }
+        }
+    }
+}
+
+-----------------------------------------------------------------------
+
+pipeline{
+    agent any
+    environment{
+        DOCKER_TAG = "0.0.2"
+    }
+    stages{
+        stage('Checkout The Code'){
+            steps{
+                git branch:'master', credentialsId:'git-ManjuKempaiah', url:'https://github.com/ManjuKempaiah/python-app'
+            }
+        }
+        stage('Docker Build'){
+            steps{
+                sh 'docker build -t manjukempaiah/pyapp:${DOCKER_TAG} .'
+            }
+        }
+        stage('Docker Hub Push'){
+            steps{
+               withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'pwd', usernameVariable: 'user')]) {
+             sh "docker login -u ${user} -p ${pwd}"
+             sh "docker push manjukempaiah/pyapp:${DOCKER_TAG}"
+             } 
+            }
+        }
+        stage('Dcoker Dev Deploy'){
+            steps{
+                sshagent(['docker-ssh']) {
+              sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.34.174 docker rm -f pyapp"
+              sh "ssh ec2-user@172.31.34.174 docker run -d -p 8080:5000 --name pyapp manjukempaiah/pyapp:${DOCKER_TAG}"
+             }
+            }
+        }
+    }
+}
+
+----------------------------------------------------------------------
