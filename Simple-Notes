@@ -494,6 +494,8 @@ Resources you've created using Terraform:
 2.Subnets
 3.Route Tables and Associations
 4.Security Groups and Network ACLs
+5.Internet Gateway
+6.Tarnsit Gateway
 
 2.Compute Resources:
 
@@ -524,13 +526,48 @@ Resources you've created using Terraform:
 
 Summary of the Deployment Stages Order
 
-1. Development: Initial coding and unit testing.
+1. Development: For Initial coding and unit testing.
 2. Testing: Automated and integration testing to catch functional issues.
 3. UAT (User Acceptance Testing): Validation by end-users or business stakeholders.
 4. Staging: Pre-production environment for final testing under conditions similar to production.
 5. Production: Live environment where the application is used by real users.
 
 --------------------------------------------------------------
+
+Why do Docker Containers fail?
+1. Container Startup Issues
+
+Misconfigured Entrypoint or Command: 
+
+If the entrypoint or command in the Dockerfile  is incorrect, 
+the container may exit immediately.
+
+If the docker run command is incorrect, the container may exit immediately.
+
+Missing Dependencies:
+
+2. Resource Constraints
+
+Out of Memory (OOM): If the container exceeds the available memory, the system may kill it.
+
+CPU Limits: Containers restricted by CPU limits may fail under high load.
+
+3. Docker Daemon Issues
+
+Corrupted Docker Installation: If Docker itself has issues, 
+containers may not run properly.
+
+Insufficient Disk Space: If the system runs out of disk space, 
+Docker containers may fail to start
+
+4. Incorrect Docker Image
+
+Wrong Image Tag: Pulling the wrong image version can
+lead to compatibility issues.
+Corrupted Image: If the Docker image is corrupted, 
+the container may not start.
+
+----------------------------------------------------------------
 
 We have developments branch for dev activities, test branch for test activities, release branch for doing particular release and feature branches for adding new features to the system.
 
@@ -542,11 +579,235 @@ We use one VPC for one environment. Development has a separate one. Testing has 
 Infrastructure and Transportation(Highways England)
 
 ---------------------------------------------------------------
+Path to the interpreter that should execute the script.
+------------------------------------------------------------------
+Environmental Variable in Jenkins are key-value pairs used to pass 
+information to jobs,pipelines,scripts during the build process.
+------------------------------------------------------------------
+A hypervisor is software that creates and manages virtual 
+machines by allocating hardware resources to them.
+------------------------------------------------------------------
+Control Node is the server where the ansible is installed.
+------------------------------------------------------------------
+Manging Node is the server that is configured using ansible.
+------------------------------------------------------------------
+Virtualization is the process of creating virtual versions of 
+computing resources, such as servers, storage, or networks.
+------------------------------------------------------------------
+-o StrictHostKeyChecking=no 
+prevents SSH from prompting and automatically accepts the host key.
+------------------------------------------------------------------
+-y: Automatically answers "yes" to any prompts during the installation.
+------------------------------------------------------------------
+tar → A Linux utility used for compressing and extracting archive files.
+x → Extracts the files from the archive.
+------------------------------------------------------------------
+sudo → Runs the command with superuser (root) privileges.
+------------------------------------------------------------------
+-R → Recursively applies changes to all files and subdirectories.
+------------------------------------------------------------------
+Copying the nginx.conf file from the current machine to the 
+/etc/nginx/nginx.conf directory on the target machine ensures 
+that the Nginx server on the target machine is configured according
+to the specifications defined in the nginx.conf file.
+-------------------------------------------------------------------
+resources: Defines the resource requirements and limits for the container.
+
+requests: Specifies the minimum amount of resources the container needs.
+
+limits: Sets upper limits on the resources the container can consume.
+--------------------------------------------------------------------
+ports: Specifies the ports to open on the Service.
+
+port: 80: Defines that the Service should listen on port 80.
+
+targetPort: 80: Specifies that the traffic should be forwarded to Pods on port 80.
+
+nodePort: 30000: Opens a specific port on all nodes in the cluster,
+allowing external traffic to reach the Service.
+--------------------------------------------------------------------------
+maxSurge: Represents the maximum number or percentage of Pods that can be 
+created above the desired number of replicas during an update. Here, it is set to 25%.
+
+maxUnavailable: Represents the maximum number or percentage of Pods that can be 
+unavailable (not running) during an update. Here, it is set to 25%.
+--------------------------------------------------------------------------
+
+Copying the nginx.conf file from the current machine to the 
+/etc/nginx/nginx.conf directory on the target machine ensures 
+that the Nginx server on the target machine is configured according
+to the specifications defined in the nginx.conf file.
+--------------------------------------------------------------------------
+resources: Defines the resource requirements and limits for the container.
+
+requests: Specifies the minimum amount of resources the container needs.
+
+limits: Sets upper limits on the resources the container can consume.
+--------------------------------------------------------------------------
+ports: Specifies the ports to open on the Service.
+
+port: 80: Defines that the Service should listen on port 80.
+
+targetPort: 80: Specifies that the traffic should be forwarded to Pods on port 80.
+
+nodePort: 30000: Opens a specific port on all nodes in the cluster,
+allowing external traffic to reach the Service.
+--------------------------------------------------------------------------
+maxSurge: Represents the maximum number or percentage of Pods that can be 
+created above the desired number of replicas during an update. Here, it is set to 25%.
+
+maxUnavailable: Represents the maximum number or percentage of Pods that can be 
+unavailable (not running) during an update. Here, it is set to 25%.
+--------------------------------------------------------------------------
+Pipeline Block: Encloses the entire Jenkins Pipeline script.
+agent any: Execute pipeline on any any available agent in Jenkins environment.
+stages: Defines the stages of the Pipeline.
+stage('Install Docker'): Defines a stage named "Install Docker".
+steps: Contains the steps to be executed within this stage.
+script: Allows running shell scripts within the Pipeline. 
+--------------------------------------------------------------------------
+Core API Group (v1)
+Extended API Group (apps/v1)
+
+v1: Used for core, stable, and essential resources like Pods, Services, ConfigMaps, etc., 
+which are part of Kubernetes' fundamental operations.
+
+apps/v1: Used for more complex, application-related resources like Deployments, 
+StatefulSets, and DaemonSets, which are managed separately to allow for greater flexibility and evolution.
+--------------------------------------------------------------------------
+Recursively
+
+-r: Primarily used in commands like rm and cp for recursive operations, 
+and it usually has the same meaning as -R.
+-R: Also used for recursive operations but is more commonly used in commands
+like chmod and chown for recursively changing permissions or ownership.
+--------------------------------------------------------------------------
+
+In Aws management console --> Click on Instance --> Actions 
+--> Instance Settings --> Change Termination Protection -- Enable
+
+While launching ec2 Instance --> Adavnced details --> Termination Protection 
+--> Enable
+
+In Aws management console --> Click on Instance --> Actions 
+--> Instance Settings --> Change Instance Type --> Select Instance Type and then save
+
+In Aws management console --> Click on Instance --> Actions 
+--> Monitor and troubleshoot --> Get Instance ScreenShot
 
 
+While launching ec2 Instance --> Click on Storage --> EBS Volume 
+-->Delete on Termination --> By Default Yes --> Make it has No
+
+While launching ec2 Instance --> Advanced network configuration --> Under Primary IP
+--> Enter the Private IP ---> then launch Instance
+
+In Aws management console --> Click on Instance --> Connect --> 
+EC2 Instance Connect --> Connect
+
+For Internet-facing load balancers:
+Open the Load Balancers section --> Select your Load Balance -->
+View Load Balancer details --> Description tab
+
+For Internal load balancers: 
+Check the "Network interfaces" section in the "Description" tab. 
+You'll find the private IP addresses
+
+Click On Loadbalancer --> Attributes --> Edit --> Load Balancer Attributes -->
+Termination Protection--> Enable --> Save Changes
+
+-------------------------------------------------------------------------------
+
+Elastic Beanstalk is a cloud service by AWS that makes it easy to
+deploy and manage applications. It automatically handles infrastructure,
+scaling, and monitoring.
+
+1. Infrastructure as a Service (IaaS)
+
+Example:
+Amazon Web Services (AWS) EC2 
+Microsoft Azure Virtual Machines
+Google Compute Engine (GCE)
+
+2. Platform as a Service (PaaS)
+
+Example:
+Google App Engine 
+Microsoft Azure App Services
+
+3. Software as a Service (SaaS)
+
+Google Workspace
+Microsoft 365
+
+Node Selcetor/Node Affinity
+Required During Scheduling Ignore During Execution
+Preffered During Scheduling Ignore During Execution
+
+Readiness/liveness/Start Up probe
+----------------------------------------------------------------------------
+
+Shebang line:
+
+ Path to the interpreter that should execute the script.
+
+-y: Automatically answers "yes" to any prompts during the installation.
+-f: Forces the pruning action without prompting for confirmation.
+The -i option in the ssh command stands for identity file.
+
+----------------------------------------------------------------------------
+docker --version
+Docker version 25.0.8
+
+jenkins --version
+2.492.2
+java-17
+
+git --version
+git version 2.47.1
 
 
+mvn --version
+Apache Maven 3.8.4
+java-17
 
+-------------------------------------------------------------------
+sudo → Runs the command with superuser (root) privileges.
+tar → A Linux utility used for compressing and extracting archive files.
+x → Extracts the files from the archive.
+f → Specifies the filename of the archive to extract.
+apache-tomcat-9.0.102.tar.gz → The archive file that contains the Tomcat files.
+
+---------------------------------------------------------------------
+
+sudo → Runs the command with superuser (root) privileges.
+chown → Changes ownership of files/directories.
+-R → Recursively applies changes to all files and subdirectories.
+ec2-user:ec2-user → Sets both owner and group to ec2-user.
+tomcat9/ → The target directory (including / ensures it's a directory).
+
+---------------------------------------------------------------------
+
+PuTTY Key Generator --> Load your pem file --> Save Private Key with.ppk 
+--> Download putty private key.
+
+Click on PuTTY 
+Session:
+Host Name or IP Adress:ec2-instance Public IP
+Port: 22
+Connection type: SSH
+Then Connection --> SSH --> Auth --> Credentials --> Private key file for Authentication Browse
+Select the Key --> open --> Login as: ec2-user
+
+-----------------------------------------------------------------------
+
+MobaXterm 
+
+Click on Session --> SSH --> Remote host: Public IP --> Specify username: ec2-user --> port: 22
+
+Advanced SSH settings --> Clock on use Private key --> Slect file --> open --> Click on OK
+
+------------------------------------------------------------------------
 
 
 
