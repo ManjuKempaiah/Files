@@ -686,15 +686,28 @@ like chmod and chown for recursively changing permissions or ownership.
 In Aws management console --> Click on Instance --> Actions 
 --> Instance Settings --> Change Termination Protection -- Enable
 
-While launching ec2 Instance --> Adavnced details --> Termination Protection 
---> Enable
-
 In Aws management console --> Click on Instance --> Actions 
 --> Instance Settings --> Change Instance Type --> Select Instance Type and then save
 
 In Aws management console --> Click on Instance --> Actions 
 --> Monitor and troubleshoot --> Get Instance ScreenShot
 
+In Aws management console --> Click on Instance --> Actions 
+--> Image and Templates --> Create Image
+
+In Aws management console --> Click on Instance --> Actions --> Security --> 
+Modify IAM Role --> Choose IAM Role --> Update IAM Role
+
+In Aws management console --> Click on Instance --> Connect --> 
+EC2 Instance Connect --> Connect
+
+In Aws management console --> Click on VPC --> Actions --> Edit CIDRs -->
+Add new IPv4 CIDRs --> and then click on save
+
+--------------------------------------------------------------------------
+
+While launching ec2 Instance --> Adavnced details --> Termination Protection 
+--> Enable
 
 While launching ec2 Instance --> Click on Storage --> EBS Volume 
 -->Delete on Termination --> By Default Yes --> Make it has No
@@ -702,11 +715,8 @@ While launching ec2 Instance --> Click on Storage --> EBS Volume
 While launching ec2 Instance --> Advanced network configuration --> Under Primary IP
 --> Enter the Private IP ---> then launch Instance
 
-In Aws management console --> Click on Instance --> Connect --> 
-EC2 Instance Connect --> Connect
-
 For Internet-facing load balancers:
-Open the Load Balancers section --> Select your Load Balance -->
+Open the Load Balancers section --> Select your Load Balancer -->
 View Load Balancer details --> Description tab
 
 For Internal load balancers: 
@@ -808,11 +818,34 @@ Click on Session --> SSH --> Remote host: Public IP --> Specify username: ec2-us
 Advanced SSH settings --> Clock on use Private key --> Slect file --> open --> Click on OK
 
 ------------------------------------------------------------------------
+When you create a VPC (Virtual Private Cloud) in AWS,
+the following resources are implicitly created:
 
+1.Default Route Table
+2.Default Network ACL (Access Control List)
+3.Default Security Group
+4.Implicit Router
 
+------------------------------------------------------------------------
+Helm is a package manager for Kubernetes,It simplifies the 
+deployment and management of applications in Kubernetes clusters 
+by using Helm charts.
 
+------------------------------------------------------------------
 
+Instance Warm Pool
 
+Instances take a long time for bootstrapping, 
+to avoid such long waiting times we can maintain a warm pool.
+
+------------------------------------------------------------------
+
+VPC Endpoints 
+
+VPC endpoints enable private connections between your Amazon VPC and supported AWS
+services without using the public internet, enhancing security and reducing latency.
+
+------------------------------------------------------------------
 
 
 
