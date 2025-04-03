@@ -2,13 +2,8 @@ top or htop command to check cpu utilization
 
 free or top command to check memory utilization
 
-
-
-getent passwd --- to list the users on linux system
-
-getent group ---- to list the groups on linux system
-
-getent group <group_name> --- to list the users in group
+uname -r ---- to check the kernel version on linux 
+uname -a 
 
 
 init 0 - command to shutdown the  linux system
@@ -19,6 +14,30 @@ init 6 - command to reboot the linux system
 lscpu --- to check number of cpus on linux system
 nproc
 
+getent passwd --- to list the users on linux system
+
+getent group ---- to list the groups on linux system
+
+getent group <group_name> --- to list the users in group
+
+
+To check open ports on linux we can use netstat or ss(socket statistics) command
+
+netstat -tuln
+ss -tuln
+
+
+How to check specific port is open on remote host?
+
+By using command line tools such as nmap, netcat(nc), telnet
+
+nmap -p <port> <hostname>
+nc -zv <hostname> <port>
+telnet <hostname> <port>
+
+
+nmap <hostname> ---- To check all ports open on remotehost
+ 
 
 lsof -p <PID>---- to find the openfiles by a specific process
 lsof -c <process_name>
@@ -34,40 +53,21 @@ pgrep <process_name>
 kill PID --- To Kill a process
 
 head -n 5 filename
-tail -n 5 filename 
+tail -n 5 filename
 
-
-uname -r ---- to check the kernel version on linux 
-uname -a 
-
-
-How to check specific port is open on remote host
-
-By using command line tools such as nmap, netcat(nc), telnet
-
-nmap -p <port> <hostname>
-nc -zv <hostname> <port>
-telnet <hostname> <port>
-
-
-nmap <hostname> ---- To check all ports open on remotehost
-
-
-To check open ports on linux we can use netstat or ss(socket statistics) command
-
-netstat -tuln
-ss -tuln 
 
 How to redirect output to standard output and to a files?
 command | tee filename
 
 
-how to find file consuming more space?
+how to find files consuming more space?
+
 du -a | sort -n -r | head -n 10
 
 
 How to find top 5 processes consuming more memory?
-Bu using ps command along with sort and head command
+
+By using ps command along with sort and head command
 ps aux --sort=-%mem | head -n 5 
 
 
@@ -82,10 +82,14 @@ du -sh
 grep stands for Global Regular Expression Print
 
 grep -c "<pattern>" filename ---- To count the number of occurences of specific pattern in a file and to display the count
-grep  -C 5 "<pattern>" filename
 grep "<pattern>" filename ----- To search the lines containing specific pattern in a file and display those lines
 grep -o "word" filename | wc -l ----- To find the number of occurences of word in a file
 -o: This option instructs grep to only print the matching parts of the line, instead of the entire line.
+
+
+grep -C 5 <"pattern"> filename 
+is used to search for a specific pattern in a file and display the matching lines along with 5 lines of context before and after each match
+
 
 𝐇𝐨𝐰 𝐭𝐨 𝐬𝐞𝐚𝐫𝐜𝐡 𝐦𝐮𝐥𝐭𝐢𝐩𝐥𝐞 𝐰𝐨𝐫𝐝𝐬 𝐚𝐧𝐝 𝐝𝐢𝐬𝐩𝐥𝐚𝐲 𝐦𝐚𝐭𝐜𝐡𝐢𝐧𝐠 𝐜𝐨𝐧𝐭𝐞𝐧𝐭 𝐟𝐫𝐨𝐦 𝐚 𝐟𝐢𝐥𝐞 𝐢𝐧 𝐋𝐢𝐧𝐮𝐱?
 grep -E 'word1|word2|word3' filename
@@ -119,13 +123,15 @@ By using sudo systemctl restart sshd
 How to provide sudo access to user?
 
 Add user to sudo group
-sudo usermod -a -G sudo username
+sudo chmod -a -G sudo username
 Edit sudoers file
-sudo vi sudo
+sudo visudo
 To allow specific user to use sudo add a line like this
 username ALL=(ALL:ALL) ALL
 
 usermod: The command used to modify a user account.
+
+---------------------------------------------------------------------
 
 Linux kernel is the core component of the linux operating system, managing system resources and providing communication between hardware and software.
 
@@ -141,9 +147,13 @@ Swap memory is also known as swap space or virtual memory.Swap memory is a space
 
 A shell is a command line interface that allows users to interact with linux operating system.
 
+Bash (Bourne Again Shell) is a command-line interpreter and scripting language for Unix-based systems, used to execute commands, automate tasks, and manage system processes.
+
+---------------------------------------------------------------------
+
 𝟏. 𝐈𝐟 𝐲𝐨𝐮 𝐰𝐚𝐧𝐭 𝐭𝐨 𝐫𝐮𝐧 𝐚 𝐭𝐚𝐬𝐤/𝐬𝐜𝐫𝐢𝐩𝐭 𝐢𝐧 𝐛𝐚𝐜𝐤𝐠𝐫𝐨𝐮𝐧𝐝 𝐞𝐯𝐞𝐧 𝐢𝐟 𝐲𝐨𝐮 𝐜𝐥𝐨𝐬𝐞 𝐲𝐨𝐮𝐫 𝐭𝐞𝐫𝐦𝐢𝐧𝐚𝐥, 𝐰𝐡𝐚𝐭 𝐢𝐬 𝐭𝐡𝐞 𝐰𝐚𝐲?
 nohup no hang up
-nohup ./manju_script.sh & (ampersand)
+nohup ./manju_script.sh &
 
 ./manju_script.sh &
 
@@ -175,7 +185,7 @@ Ans: lsblk -f
 
 8. How to copy files on to Remote Server?
 Ans: scp  
-scp target/chatbot.war @192.168.1.100:/app/tomcat9/webapps
+scp target/chatbot.war ec2-user@192.168.1.100:/opt/tomcat9/webapps
 
 9.How do you delete 30 days old files?
 Ans: find /path/to/directory -type f -mtime +30 -delete
@@ -183,8 +193,16 @@ Ans: find /path/to/directory -type f -mtime +30 -delete
 10.Diff b/w chmod and chown?
 Ans: chmod - To Change the permissions of files and dircetories
      chown - To Change the ownership of files and directories 
-     usermod - To modify the user account
+     chgrp - To change the group ownership of files or directories.
+     usermod - To modify user account
 
+chgrp groupname file1.txt file2.txt dir1
+
+ps aux 
+ps 
+ps -o ux
+
+---------------------------------------------------------------------
 
 useradd <username> To create user
 useradd u1 ; useradd u2 To create multiple users
@@ -195,7 +213,7 @@ passwd <username> To create the password
 passwd -d <username> To remove the password
 getent passwd     To Check the users on linux system
 
-
+---------------------------------------------------------------------
 
 groupadd <groupname>  To create group
 gpasswd -M u1,u2 <groupname> To add users to group for first time    -M: The option to set the list of group members.
@@ -211,17 +229,127 @@ To Remove user from group
 gpasswd -d <user_name> <group_name>
 userdel <user_name> <group_name>
 
+---------------------------------------------------------------------
+
+1.How do you monitor real time logs for specific process?
+  tail -f /path/to/logfile.log | grep "process_name"
+
+2.How do check disk I/O usage?
+  iostat -x 1
+  iotop
+
+3.What happens when you run top and press 1?
+  It displays the CPU usage for each individual CPU core
+
+4.How do you check which process using specific port?
+  lsof -i :<port_number>
+  netstat -tuln | grep :<port_number>
+  ss -tuln | grep :<port_number>
+
+5.What is the difference between ping and telnet?
+  Ping checks network connectivity using ICMP, while Telnet checks 
+  application-level connectivity on a specific port using TCP.
+
+6.What happens if you delete file that is being used by a running process?
+  The file is unlinked and becomes inaccessible, but its data remains until the process closes it.
+
+7.How do you troubleshoot high cpu usage in linux?
+  By using top or htop command.
+
+
+---------------------------------------------------------------------
+ll -- long list -- To see the all files and directories permissions
+
+File and Directory Permissions in Linux
+
+In Linux, every file and directory has permissions that control who can read, write, or execute them. These permissions are categorized into three groups:
+
+Owner (User) – The creator of the file/directory.
+
+Group – A set of users who share access.
+
+Others – Everyone else.
+
+---------------------------------------------------------------------
+
+Each permission is represented using three characters:
+
+r (read)(4) → View the contents of a file or list a directory.
+
+w (write)(2) → Modify a file or create/delete files in a directory.
+
+x (execute)(1) → Run a file as a program or access a directory.
+
+---------------------------------------------------------------------
+
+Permission Representation
+
+Permissions are displayed using ls -l, showing a 10-character string like:
+
+
+-rw-r--r--  1 user group  1234 Apr 3 10:00 file.txt
+Breaking it down:
+
+-rw-r--r--
+
+- → Type (- for file, d for directory)
+
+rw- → Owner has read and write permissions.
+
+r-- → Group has read-only permission.
+
+r-- → Others have read-only permission.
+
+---------------------------------------------------------------------
+
+For directories:
+
+drwxr-xr-x  1 user group  4096 Apr 3 10:00 mydir
+
+d → Directory
+
+rwx → Owner has read, write, and execute permissions.
+
+r-x → Group can read and execute but cannot modify.
+
+r-x → Others can read and execute but cannot modify.
+
+---------------------------------------------------------------------
+
+Default Permissions (Umask)
+
+Files: Default is rw-r--r-- (644) because execute (x) is removed.
+
+Directories: Default is rwxr-xr-x (755) because directories need execute (x) for navigation.
+
+You can check the current umask (which determines default permissions) using:
+
+Common umask values:
+
+022 → Files: 644, Directories: 755
+
+666-022=644
+777-022=755
+
+---------------------------------------------------------------------
 
 Identify Large Files and Directories
 Remove Unnecessary Files
 Clear System Logs              sudo truncate -s 0 /var/log/syslog  sudo echo "" > /var/log/syslog
-Clean Package cache
+Clean Package Cache
 Resize Partitions
 Move Large Files and Directories
 Compress Files Or Directories   zip or tar
 
 
+Linux is an open-source operating system (OS) that is used on computers, servers, mobile devices, and more. It is known for its security and versatility.
 
+Features of Linux
+
+Open source
+Supported on many paltforms
+Flexible
+Secure
 
 
 
