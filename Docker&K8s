@@ -772,3 +772,79 @@ pipeline{
 }
 
 ----------------------------------------------------------------------
+How do you reduce the size of the Docker Image?
+
+1.Use official base image
+2.choose minimal base image
+3.Leverage muli-stage build
+4.Minimize image layers
+5.Remove unnecessary files and dependencies
+6.Use .dockerignore to exclude unwanted files
+6.Use distroless images
+
+----------------------------------------------------------------------
+
+How do you limit container resources in docker?
+
+CPU Limit   : docker run --cpus="2" <image_name>  (2 cpu cores)
+Memory Limit: docker run --memory="512m" <image_name>  (512 MB)
+
+----------------------------------------------------------------------
+
+How do you check the resource usage of a running container?
+
+docker stats <container_id>
+
+----------------------------------------------------------------------
+
+what happens when you run docker stop vs. docker kill?
+
+docker stop: Garcefully stops the continer.
+docker kill: Immediately stops the container without cleanup.
+
+----------------------------------------------------------------------
+
+How to manage multi-cluster deployments?
+
+Using KubeFed(Kubernetes Federation) ot tools like ArgoCD
+
+---------------------------------------------------------------------
+what is CRD (Custom Resource Definition)?
+
+CRDs allow users to define and manage own resources in kubernetes.
+
+---------------------------------------------------------------------
+How do you monitor a kubernetes cluster?
+
+Use Promotheous and Grafana for metrics
+Use Elasticsearch, Kibana for logging 
+
+---------------------------------------------------------------------
+what is the difference between Helm and Kustomize?
+
+Helm: Uses templates for package management
+Kustomize: Uses overlays for customization without templates
+
+---------------------------------------------------------------------
+How do you mangae statefull applications in Kubernetes?
+
+By using StatefulSets, Persistent Volumes and Persistent Volume Claims.
+
+---------------------------------------------------------------------
+How do you handle pod failures?
+
+Use Readiness and Liveness Probes
+Set Restart Policies (Always,OnFailure,Never)
+
+---------------------------------------------------------------------
+How do you trouble shoot high cpu or memory usage in Kubernetes?
+
+Use kubectl top pods to check resource usage, Check logs with kubectl logs pod_name
+
+---------------------------------------------------------------------
+
+Helm is a package manager for Kubernetes,It simplifies the 
+deployment and management of applications in Kubernetes clusters 
+by using Helm charts.
+
+---------------------------------------------------------------------
