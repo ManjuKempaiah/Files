@@ -201,3 +201,51 @@ b.Continuous Deployment (CD) Pipelines
 
 -------------------------------------------------------------------------
 
+provider "aws" {
+  region = "us-west-2"
+}
+
+# Resource Definitions
+resource "aws_instance" "example_instance" {
+  # Attributes will be populated after import
+}
+
+resource "aws_s3_bucket" "example_bucket" {
+  # Attributes will be populated after import
+}
+
+resource "aws_iam_user" "example_user" {
+  # Attributes will be populated after import
+}
+
+# Import Blocks
+import {
+  to = aws_instance.example_instance
+  id = "i-1234567890abcdef0" # Replace with your EC2 instance ID
+}
+
+import {
+  to = aws_s3_bucket.example_bucket
+  id = "my-existing-bucket" # Replace with your S3 bucket name
+}
+
+import {
+  to = aws_iam_user.example_user
+  id = "existing-user" # Replace with your IAM user name
+}
+
+--------------------------------------------------------------------
+
+count     --> Creates multiple identical resources (count=3).
+for_each  --> Creates resources based on a map/set(dynamic keys) 
+
+terrafrom import --> Brings existing resources under terraform control
+terraform state  --> Manages state(list,move,remove resources)
+
+what is remote state, and why use it?
+ 
+Remote state stores terraform state file in a shared location to enble 
+collaboration and avoid conficts.
+
+--------------------------------------------------------------------
+
