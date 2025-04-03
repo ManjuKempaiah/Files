@@ -1,0 +1,77 @@
+1.EC2-user Demo
+2.Demo Create Custom AMIs
+3.Attaching Ebs Volume to ec2-instance
+4.Amazon Data Lifecycle Manager
+5.Crete VPC with one Public Subnet and To make Subnt Public Configure Internet Gateway In Route table
+6.Create VPC with one Public Subnet and Private Subnet
+7.To provide Internet connection to the Private Subnet Using Nat Instance
+8.To provide Internet connection to the Private Subnet using NatGateway
+9.VPC Peering Demo
+10.Transit Gateway Demo
+11.Load Balancer Demo
+12.Blue Green Deployment	
+13.Demo - Setup autoscaling
+14.EC-2 Userdata Demo
+15.Demo - EFS
+16.RDS(Relational Database Service)
+17.DynamoDB
+18.CloudWatch
+19.CloudTrail
+20.IAM(Identity and Access Management)
+21.S3(Simple Storage Service)
+23.VPC Endpoints Demo
+
+------------------------------------------------------------------
+
+sudo su       --- switch to the root
+su - ec2-user --- switch to the ec2-user 
+cd            --- change directory
+cd ~          --- navigate to the home directory of the current user
+ll            --- List Files with Detailed Information
+ls -l         --- lists files and directories in long format
+df            --- Stands for disk free, This command diplays the amount of free and used diskapce on file system
+df -h         --- This command diplays the information about each file system
+du            --- Stands for diskusage, To check the disk usage of specific files and directories
+du -sh        --- To summarize the space used by specific files and directories 
+
+
+ssh -i ~/Downloads/kemp.pem ec2-user@192.168.1.100
+ssh -i /path/to/private_key.pem username@remote_host
+
+sudo yum install httpd -y
+sudo yum remove httpd -y
+sudo systemctl start httpd
+sudo systemctl status httpd
+sudo systemctl enable httpd
+
+
+lsblk
+sudo mkfs.ext4 /dev/nvme1n1 
+sudo mkdir /myvol
+sudo mount /dev/nvme1n /myvol/
+sudo vi /etc/fstab
+sudo blkid /dev/nvme1n1
+sudo resize2fs /dev/nvme1n1
+
+cd /opt/
+sudo yum list | grep java-17
+sudo wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.102/bin/apache-tomcat-9.0.102.tar.gz
+sudo tar xf apache-tomcat-9.0.102.tar.gz
+sudo rm -f apache-tomcat-9.0.102.tar.gz
+sudo mv apache-tomcat-9.0.102 tomcat9
+sudo chown -R ec2-user:ec2-user tomcat9/
+
+
+aws configure
+aws sts get-caller-identity
+aws s3 ls
+aws s3 cp <source_file_path> s3://bucket-name
+aws s3 ls s3://bucket-name
+
+
+aws ec2 start-instances --instance-ids instance_id instance_id
+aws ec2 stop-instances --instance-ids instance_id instance_id
+aws ec2 reboot-instances --instance-ids instance_id instance_id
+aws ec2 terminate-instances --instance-ids instance_id instance_id
+
+
