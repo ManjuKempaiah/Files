@@ -107,22 +107,9 @@ spec:
         averageUtilization: 50  # Target average CPU utilization
 -----------------------------------------------------------------------
 
-docker logs container_id
-docker stats
-docker exec -it container_id bash
-docker inspect container_id
-docker-compose up -d
-docker-compose ps
-docker network create --driver=bridge network_name
-docker network list
-docker network inspect network_name
-docker history image_id
-
-docker image prune -f
-docker system prune -f
-
 docker ps 
 docker ps -a
+docker ps -aq
 docker rm container_id
 docker rm -f container_id
 docker rm -f $(docker ps -aq)    (removes all the containers including running and exited)   (-aq --- all conatiner_ids)
@@ -133,8 +120,8 @@ docker rm -f $(docker ps --filter="status=exited" -q)
 docker rm -f $(docker ps --filter="status=running" -q)
 
 docker images
-docker rmi imageid
-docker rmi -f imageid
+docker rmi image_id
+docker rmi -f image_id
 docker rmi -f $(docker images -q) (removes all the images including dangling and non-dangling)
 docker images --filter="dangling=true" -q
 docker images -f="dangling=true" -q
@@ -142,9 +129,28 @@ docker images -f "dangling=true" -q
 docker rmi -f $(docker images --filter="dangling=true" -q)
 docker rmi -f $(docker images --filter="dangling=false" -q)
 
+docker logs container_id
+docker stats
+docker exec -it container_id bash
+docker inspect container_id
+docker-compose up -d
+docker-compose ps
+docker network create --driver=bridge network_name
+docker network list
+docker network inspect network_name
+
+
+docker image prune -f
+docker system prune -f
+docker history image_id
+
 docker volume create jenkins
 docker volume inspect jenkins
 docker volume ls
+docker volume rm jenkins
+docker run -d -p <host_port>:<container_port> --name <container_name> -v manju:/path/inside/container   
+<image_name>:<tag>
+docker run -d -p 8080:8080 -p 50000:50000 -v jenkins:/var/jenkins_home --name jenkins jenkins/jenkins
 
 docker info
 docker login -u user_name
@@ -153,12 +159,7 @@ docker pull <image_name>
 printenv
 exit
 
-docker stop container_id
-docker rm container_id
-docker kill container_id
-
 /var/lib/docker/volumes  --- Docker Volumes are stored in
-
 
 To copy a file or directory from the host machine to a running Docker container
 docker cp <source_file_path> <container_name>:<container_file_path>
@@ -167,14 +168,79 @@ To copy a file from a running Docker container to the host machine
 docker cp <container_name>:<container_file_path> <host_file_path>
 
 
+docker run -itd --name=one alpine 
+docker run -itd --name=two alpine 
+
+docker run -itd --name=one --network=manju_jhc alpine
+docker run -itd --name=two --network=manju_jhc alpine
+
+docker run -it manjukempaiah/tomcat:0.0.1 
 
 docker build -t manjukempaiah/<image_name>:<tag> .
+docker build -t user_name/<image_name>:<tag> .
+docker build -t <nexus_repo_url>/<image_name>:<tag> .
+
+Reads the dockerfile to build an image.
+Uses docker engine to execute each instruction in the dockerfile
+
+docker build -t manjukempaiah/tomcat:0.0.1 . --build-arg JAVA_PKG=openjdk8
+
+
 docker run -d -p <host_port>:<container_port> --name container_name <image_name>:<tag>
+
+pulls the requested image from dockerhub if not available locally.
+Create a conatiner from the image
+Assisgns a unique container_id
+Runs the container in the docker engine
 
 docker run -it -e CONFIG_FILE="/app/prod.config" manjukempaiah/tomcat:0.0.1 
 docker run -it --env-file ./manju.env manjukempaiah/tomcat:0.0.1
 
-docker build -t manjukempaiah/tomcat:0.0.1 . --build-arg JAVA_PKG=openjdk8 
+How do you limit container resources in docker?
+
+docker run --cpus="2" --memory="512m" imagename
+docker run --cpus="2" imagename
+docker run --memory="512m" imagename
+
+
+docker stop container_id  --- Gracefully stpos the container
+docker rm container_id    --- Removes the stopped container
+docker kill container_id  --- Immediately stops the container without cleanup
+docker top container_id   --- To Diplay the running processes inside the container
+docker stats container_id --- To Check resource usage of running container
+
+
+docker run -e DB_PASSWORD=$DB_PASSWORD myapp
+docker commit <container-id> recovered-image
+
+
+---------------------------------------------------------------------
+
+In Docker, ARG and ENV are both used to define variables
+
+ARG (Build-time Argument)
+
+ARG is the docker build time argument
+Used to pass variables at build time
+
+ENV (Environment Variable)
+
+ENV is the docker runtime argument
+Used to pass variables at run time
+
+---------------------------------------------------------------------
+
+Docker Engine contains the following main components:
+
+Docker Daemon:
+
+Docker CLI:
+
+The command-line interface used by developers to interact with the Docker Daemon.
+
+Docker REST API:
+
+Allows communication between the Docker CLI and Docker Daemon.
 
 ---------------------------------------------------------------------
 
@@ -190,6 +256,7 @@ kubectl run nodeapp --image=manjukempaiah/node-web-app --port=8080
 kubectl expose pods/myapp --type="NodePort" --port 8080
 
 eksctl create cluster --name=jhc-aug-dev
+eksctl create cluster --name=jhc-aug-dev --nodes=5
 eksctl delete cluster --name=jhc-aug-dev 
 
 
@@ -202,21 +269,20 @@ The -f flag in the kubectl command stands for file
 
 kubectl logs <pod_name>
 kubectl logs <pod_name> -c conatiner_name
+kubectl describe pod <pod_name>
+kubectl describe pod <pod_name> -c container_name
+kubectl describe pod <pod_name> -n namespace | grep "Restart Count"
 kubectl exec -it <pod_name> -- /bin/bash
 kubectl exec -it pod_name -c container_name -- /bin/bash
 kubectl get pods -o wide
 
 
-kubectl describe pod <pod_name>
-kubectl describe pod <pod_name> -c container_name
-kubectl describe pod <pod_name> -n namespace | grep "Restart Count"
-
+To find pods that are not ready
+kubectl get pods | grep "0/"
 
 To find all pods across all namespaces that are not ready
 kubectl get pods -A | grep "0/"
 
-To find pods that are not ready
-kubectl get pods | grep "0/"
 
 To find all failed pods in the current namespace,
 kubectl get pods --field-selector=status.phase=Failed
@@ -233,16 +299,19 @@ kubectl rollout undo deployment deployment_name -n namespace
 kubectl rollout undo deployment deployment_name -n namespace --to-revision=n
 kubectl rollout restart deployment deployment_name -n namespace
 kubectl rollout history deployment deployment_name -n namespace
+kubectl describe deployment deployment_name -n namespace
 
 
 kubectl scale deployment <deployment_name> -n <namespace> --replicas=3
+Kubectl scale rs nginx -n namespace --replicas=n
 
+kubectl set image deployment <deployment-name> <container-name>=<image-name>:<tag>
+kubectl top pod <pod-name>
 
-kubectl rollout status deployment/your-deployment-name -n your-namespace
-kubectl rollout history deployment/your-deployment-name -n your-namespace
-kubectl rollout undo deployment/your-deployment-name -n your-namespace
-kubectl rollout undo deployment/your-deployment-name -n your-namespace --to-revision=n
-kubectl rollout restart deployment/your-deployment-name -n your-namespace
+kubectl get pods --show-labels -n <namespace>
+kubectl get endpoints <service-name> -n <namespace>
+sudo systemctl stop kubelet
+sudo systemctl start kubelet
 
 
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
@@ -288,7 +357,7 @@ Copying the nginx.conf file from the current machine to the /etc/nginx/nginx.con
 This triggers the restart nginx handler whenever the file is changed.
 Handlers run only if the task makes changes (e.g., if nginx.conf is modified).
 
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 
 Apache playbook
 
@@ -771,8 +840,183 @@ pipeline{
     }
 }
 
+
+
 ----------------------------------------------------------------------
+
+How to manage multi-cluster deployments?
+
+Using KubeFed(Kubernetes Federation) or tools like ArgoCD
+
+---------------------------------------------------------------------
+
+what is CRD (Custom Resource Definition)?
+
+CRDs allow users to define and manage own resources in kubernetes.
+
+---------------------------------------------------------------------
+How do you monitor a kubernetes cluster?
+
+Use Grafana and Promotheous for metrics
+Use Elasticsearch, Kibana for logging 
+
+---------------------------------------------------------------------
+
+what is the difference between Helm and Kustomize?
+
+Helm: Uses templates for package management
+Kustomize: Uses overlays for customization without templates
+
+---------------------------------------------------------------------
+
+How do you mangae statefull applications in Kubernetes?
+
+By using StatefulSets, Persistent Volumes and Persistent Volume Claims.
+
+---------------------------------------------------------------------
+
+How do you handle pod failures?
+
+Use Readiness and Liveness Probes
+Set Restart Policies (Always,OnFailure,Never)
+Check Node Availability
+Check taint and tolerations
+
+---------------------------------------------------------------------
+
+How do you trouble shoot high cpu or memory usage in Kubernetes?
+
+Use kubectl top pods to check resource usage, Check logs with kubectl logs pod_name
+
+---------------------------------------------------------------------
+
+Helm is a package manager for Kubernetes,It simplifies the 
+deployment and management of applications in Kubernetes clusters 
+by using Helm charts.
+
+---------------------------------------------------------------------
+
+How would you control pod-to-pod traffic for enhanced security?
+
+By uisng Network Policies
+
+---------------------------------------------------------------------
+
+How would a recover a Kubernetes cluster if etcd goes down?
+
+Recovery from etcd Backup (Best Practice)
+
+Step 1: Stop kube-apiserver                (sudo systemctl stop kubelet)
+Step 2: Restore etcd from Backup
+Step 3: Ensure correct ownership/permissions
+Step 4: Restart etcd and kube-apiserver    (sudo systemctl start kubelet)
+
+---------------------------------------------------------------------
+
+how would drain node from maintenance without affecting availability?
+
+Step 1: Check Node and Pod Distribution
+Step 2: Cordon the Node
+Step 3: Drain the Node
+Step 4: Verify Pods are Rescheduled
+Step 5: Perform Maintenance on the Node
+Step 6: UnCordon the Node
+
+---------------------------------------------------------------------
+
+How do you manage application secrets securely in kubernetes?
+
+Use Kubernetes Secrets to store sensitive data.
+
+Mount secrets into pods as environment variables or files.
+
+Restrict access to secrets using RBAC (permissions).
+
+Enable encryption at rest for secrets in etcd.
+
+use external secret managers like AWS Secrets Manager
+
+---------------------------------------------------------------------
+
+A service is not discoverable inside the cluster - where would you start investigation?
+
+1. Check if the Service Exists
+2. Check Pod Labels Match Service Selector
+3. Check if Endpoints Are Created
+4. Check Pod Status
+5. Check Network Policies
+
+kubectl get svc -n <namespace>
+kubectl get pods --show-labels -n <namespace>
+kubectl describe svc <service-name> -n <namespace>
+kubectl get endpoints <service-name> -n <namespace>
+kubectl get pods -n <namespace>
+
+---------------------------------------------------------------------
+
+Here are the main types of Kubernetes API objects/resources:
+
+1. Workload Resources (Define what runs in your cluster)
+
+Pod: The smallest deployable unit in Kubernetes. Represents one or more containers.
+
+ReplicaSet: Ensures a specified number of pod replicas are running.
+
+Deployment: Manages ReplicaSets and provides declarative updates to pods.
+
+StatefulSet: Like a Deployment but for stateful applications (e.g., databases).
+
+DaemonSet: Ensures a pod runs on all (or some) nodes.
+
+Job: Runs a task to completion (once or specified times).
+
+CronJob: Runs jobs on a schedule (like cron).
+
+2. Service Resources (Expose and access workloads)
+
+Service: Exposes a set of pods as a network service.
+
+ClusterIP, NodePort, LoadBalancer, ExternalName
+
+Ingress: Manages external HTTP/S access to services.
+
+3. Configuration Resources
+
+ConfigMap: Stores configuration data as key-value pairs.
+
+Secret: Stores sensitive data like passwords or API keys.
+
+4. Storage Resources
+
+PersistentVolume (PV): A piece of storage in the cluster.
+
+PersistentVolumeClaim (PVC): A request for storage by a user.
+
+5. Namespace and Access Control
+
+Namespace: Virtual cluster within a physical cluster to organize resources.
+
+ServiceAccount, Role, RoleBinding, ClusterRole, ClusterRoleBinding: For access control (RBAC).
+
+6. Networking and Policy
+
+NetworkPolicy: Controls traffic flow between pods.
+
+Endpoint: Links Services to Pods.
+
+7. Custom Resources
+
+CustomResourceDefinition (CRD): Allows you to define your own resource types.
+
+---------------------------------------------------------------------
+
+                         DOCKER
+
+---------------------------------------------------------------------
+
 How do you reduce the size of the Docker Image?
+                  or
+What strategy would you use to shrink docker image?
 
 1.Use official base image
 2.choose minimal base image
@@ -804,47 +1048,208 @@ docker kill: Immediately stops the container without cleanup.
 
 ----------------------------------------------------------------------
 
-How to manage multi-cluster deployments?
+Docker volumes are persistent storage mechanisms used to store and share
+data between containers or between host machine and containers,
+independent of the container's lifecycle.
 
-Using KubeFed(Kubernetes Federation) ot tools like ArgoCD
+Docker Volumes Types:
 
----------------------------------------------------------------------
-what is CRD (Custom Resource Definition)?
+1.Volumes
+2.Bind Mounts
+3.tmpfs Mounts
 
-CRDs allow users to define and manage own resources in kubernetes.
+--------------------------------------------------------------------
 
----------------------------------------------------------------------
-How do you monitor a kubernetes cluster?
+Docker Networking
 
-Use Promotheous and Grafana for metrics
-Use Elasticsearch, Kibana for logging 
+Docker networking enables communication between containers, 
+and between containers and the outside world.
 
----------------------------------------------------------------------
-what is the difference between Helm and Kustomize?
+--------------------------------------------------------------------
+Docker Networking Types:
 
-Helm: Uses templates for package management
-Kustomize: Uses overlays for customization without templates
+1.Bridge Network
+2.Custom Network
+3.Host Network
+4.None Network
+5.Overlay Network
+6.Macvlan Network
 
----------------------------------------------------------------------
-How do you mangae statefull applications in Kubernetes?
+--------------------------------------------------------------------
+3.Docker Compose
 
-By using StatefulSets, Persistent Volumes and Persistent Volume Claims.
+Docker Compose is a tool that defines and manages 
+multi-container Docker applications using a YAML file.
 
----------------------------------------------------------------------
-How do you handle pod failures?
+docke-compose up -d
+docker-compose ps
 
-Use Readiness and Liveness Probes
-Set Restart Policies (Always,OnFailure,Never)
+--------------------------------------------------------------------
 
----------------------------------------------------------------------
-How do you trouble shoot high cpu or memory usage in Kubernetes?
+docker stop container_id  --- Gracefully stpos the container
+docker rm container_id    --- Removes the stopped container
+docker kill container_id  --- Immediately stops the container without cleanup
+docker top container_id   --- To Diplay the running processes inside the container
+docker stats container_id --- To Check resource usage of running container
 
-Use kubectl top pods to check resource usage, Check logs with kubectl logs pod_name
+--------------------------------------------------------------------
 
----------------------------------------------------------------------
+How would you update running container without downtime?
 
-Helm is a package manager for Kubernetes,It simplifies the 
-deployment and management of applications in Kubernetes clusters 
-by using Helm charts.
+By using Rolling Updates
+     or
+By using Blue-Green Deployments
 
----------------------------------------------------------------------
+--------------------------------------------------------------------
+
+How do you handle container networking across different hosts?
+                  or
+How would you allow two container's to communicate across different docker hosts?
+
+By using Overlay Network 
+
+--------------------------------------------------------------------
+
+How to isolate networking between two containers?
+
+By using custom bridge network or own bridge network
+
+--------------------------------------------------------------------
+
+How can you monitor container health?
+
+1. Docker Health Checks
+2. Docker Events and Logs
+3. Readiness and Liveness Probes
+
+--------------------------------------------------------------------
+
+You accidentally delete a running container - how do you recover any important data?
+
+By using Docker Volumes 
+
+docker commit <container-id> recovered-image
+
+If you’ve made changes inside a running container 
+(e.g., installed packages, changed configs), and you don’t want to 
+lose that work, docker commit saves that container as a reusable image.
+
+--------------------------------------------------------------------
+
+How would you configure a persistent storage for a Docker Container?
+
+By using Docker Volumes
+
+--------------------------------------------------------------------
+
+How do you handle versioning of Docker images for different environments? 
+
+1. Use Semantic Versioning (SemVer)
+2. Add Environment-Specific Tags
+
+--------------------------------------------------------------------
+
+If a containerized app fails in production, how would you trouble shoot it?
+
+1. Check Container Status
+   
+   docker ps -a
+
+   Or in Kubernetes: 
+
+   kubectl get pods
+   kubectl describe pod <pod-name>
+
+2. Inspect Logs
+
+  docker logs <container_id>
+
+  kubectl logs <pod-name>
+
+3. Check Events
+
+  kubectl get events 
+
+4. Check Resource Usage
+   
+   docker stats container_id
+   kubectl top pod <pod-name>
+
+5. Run Container Interactively
+   
+   docker exec -it <container_id> bash
+   kubectl exec -it <pod-name> -- /bin/bash
+
+6. Check Application Health
+
+7. Look at Monitoring & Alerting Tools
+
+--------------------------------------------------------------------
+
+
+How do you securely pass environment variables to a container?
+
+ 1. Use -e or --env-file (for basic usage)
+ 2. Use Docker Secrets
+ 3. Use Kubernetes Secrets (if using K8s)
+ 4. Use a Secret Manager
+
+ --------------------------------------------------------------------
+
+Features of Docker
+
+1.Consistency: Ensures Applications run the same the way in development,
+               testing and production environments
+
+2.Isolation: Containers are isolted from each other and the host system
+
+3.Poratbility: Containers can run on any system that supports docker
+
+4.Scalability: Easy to scale applications horizontally by running multiple
+               containers
+
+5.Version Control: Docker Images can be versioned
+
+--------------------------------------------------------------------
+
+Who do you manage secrets inside docker container?
+
+1.Environment Variables
+   
+   Set secrets as environment variables using -e or --env-file.
+
+   docker run -e DB_PASSWORD=mysecret123 myapp
+
+
+2.Docker Secrets (for Swarm mode)
+
+3.Use Secret Management Tools
+
+--------------------------------------------------------------------
+
+A container keeps restarting - how would you bedbug it?
+                     or
+A Docker container keeps existing immediately after starting - how would you trouble shoot it?
+
+ 1. Check Container Logs
+ 2. Check Restart Policy
+ 3. Check Container Exit Code
+ 4. Run the Container Interactively
+ 5. Look at Dockerfile Entrypoint / CMD
+
+--------------------------------------------------------------------
+
+How would you optimize container startup times?
+
+1.Use official base image
+2.choose minimal base image
+3.Reduce Image Size
+4.Avoid Heavy Startup Scripts
+5.Minimize Dependencies
+
+--------------------------------------------------------------------
+
+
+
+
+
