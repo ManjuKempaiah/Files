@@ -36,6 +36,8 @@ nc -zv <hostname> <port>
 telnet <hostname> <port>
 
 
+How to check specific ports on remote host?
+
 nmap <hostname> ---- To check all ports open on remotehost
  
 
@@ -196,6 +198,11 @@ Ans: chmod - To Change the permissions of files and dircetories
      chgrp - To change the group ownership of files or directories.
      usermod - To modify user account
 
+     ll - long list -- To see the files and directories permissions
+     ls -l - To list files and directories in the current directory in long format. 
+
+     tar → A Linux utility used for compressing and extracting archive files.
+
 chgrp groupname file1.txt file2.txt dir1
 
 ps aux 
@@ -351,8 +358,18 @@ Supported on many paltforms
 Flexible
 Secure
 
+---------------------------------------------------------------------
 
-
+Linux Kernel
+Hard Link Soft Link
+Inode
+Swap Memory 
+Shell
+Bash
+How do you block root access?
+How do you provide sudo access to user?
+what is the difference betwee ping and telnet? 
+what happens if you delete file that is being used by running process?
 
 
 
