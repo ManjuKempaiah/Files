@@ -1149,6 +1149,17 @@ How do you handle versioning of Docker images for different environments?
 
 --------------------------------------------------------------------
 
+How do you automatically restart failed containers in production?
+
+1. Set Restart policy
+  
+    docker run --restart=always my-app
+    docker run --restart=on-failure:5 my-app
+2. Use Docker health checks
+3. Use LivenessProbe in Kubernetes 
+
+--------------------------------------------------------------------
+
 If a containerized app fails in production, how would you trouble shoot it?
 
 1. Check Container Status
