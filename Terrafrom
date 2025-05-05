@@ -1,5 +1,7 @@
 terraform init
 terraform plan
+terraform apply
+terrform provider
 terraform apply -auto-approve
 terraform destroy -auto-approve
 terraform state list
@@ -7,8 +9,8 @@ terraform state list
 terraform fmt --- Formats the Code -- To Check the alignment of the code
 terraform validate -- Validates the Code -- To Check the Syntax of the code
 
-terraform apply -auto-approve -var region = eu-north-1
-terraform apply -auto-approve -var -file=dev.tfvars
+terraform apply -auto-approve -var region=eu-north-1
+terraform apply -auto-approve -var-file=dev.tfvars
 
 .terraform
 .terraform.lock.hcl
@@ -249,3 +251,24 @@ collaboration and avoid conficts.
 
 --------------------------------------------------------------------
 
+variable "env" {
+  default = "dev"
+}
+
+
+resource "aws_internet_gateway" "main" {
+  count = var.env == "dev" ? 1 : 0
+
+  vpc_id = aws_vpc.main.id
+  tags = {
+  Name = "manju-internet_gateway"
+  }
+}
+
+count = var.env == "prod"? 1 : 0: This is a conditional expression. It checks the value of a variable called env:
+
+If env is true, then count = 1 → internet_gateway will be created.
+
+If false, then count = 0 → no internet_gateaway will be created.
+
+--------------------------------------------------------------------
