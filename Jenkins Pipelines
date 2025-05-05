@@ -7,6 +7,19 @@ script: Allows running shell scripts within the Pipeline.
 
 --------------------------------------------------------
 
+   -o StrictHostKeyChecking=no ****
+   prevents SSH from prompting and automatically accepts the host key.
+
+------------------------------------------------------------   
+
+sh step is used to execute shell commands on the agent 
+(typically a Linux machine) where the pipeline is running.
+
+ssh is used in a Jenkins pipeline to securely 
+connect to remote servers and run commands
+
+--------------------------------------------------------
+
 Docker Dev Deploy
 
 pipeline{
@@ -55,8 +68,8 @@ pipeline{
 	stage('Docker Dev Deploy'){
 	steps{
 	sshagent(['docker-ssh']){
-	sh "ssh -o StrictHostKeyChecking=no ec2-user@192.1.168.100 docker rm -f pythonapp"
-	sh "ssh ec2-user@192.168.100 docker run -d -p 8080:5000 --name pythonapp manjukempaiah/pythonapp:0.0.1"
+	sh "ssh -o StrictHostKeyChecking=no ec2-user@192.168.1.100 docker rm -f pythonapp"
+	sh "ssh ec2-user@192.168.1.100 docker run -d -p 8080:5000 --name pythonapp manjukempaiah/pythonapp:0.0.1"
 	}
 	}
 	}
@@ -286,11 +299,16 @@ Trigger The Job
  }
  stage('Trigger The Job'){
  steps{
- build('jobname')
+ build('Jobname')
  }
  }
  }
  }
+
+ build job: 'JobName'
+ build('JobName')
+ build'JobName'
+
 
 --------------------------------------------------------
 
@@ -426,12 +444,14 @@ v1: Used for core, stable, and essential resources like Pods, Services, ConfigMa
 apps/v1: Used for more complex, application-related resources like Deployments, StatefulSets, and DaemonSets, which are managed separately to allow for greater flexibility and evolution.
 
 --------------------------------------------------------
+
 Recursively
 
 -r: Primarily used in commands like rm and cp for recursive operations, and it usually has the same meaning as -R.
 -R: Also used for recursive operations but is more commonly used in commands like chmod and chown for recursively changing permissions or ownership.
 
 --------------------------------------------------------
+
 Environmental Variable in Jenkins are key-value pairs used to pass information to jobs,pipelines,scripts during the build process
 
 --------------------------------------------------------
@@ -444,17 +464,102 @@ We use one VPC for one environment. Development has a separate one. Testing has 
 --------------------------------------------------------
 
 Path to the interpreter that should execute the script.
+
 --------------------------------------------------------
+
 Environmental Variable in Jenkins are key-value pairs used to pass 
 information to jobs,pipelines,scripts during the build process.
+
 --------------------------------------------------------
+
 A hypervisor is software that creates and manages virtual 
 machines by allocating hardware resources to them.
+
 --------------------------------------------------------
+
 Control Node is the server where the ansible is installed.
+
 --------------------------------------------------------
+
 Manging Node is the server that is configured using ansible.
+
 --------------------------------------------------------
+
 Virtualization is the process of creating virtual versions of 
 computing resources, such as servers, storage, or networks.
+
 --------------------------------------------------------
+
+   -o StrictHostKeyChecking=no ****
+   prevents SSH from prompting and automatically accepts the host key.
+
+------------------------------------------------------------   
+
+sh step is used to execute shell commands on the agent 
+(typically a Linux machine) where the pipeline is running.
+
+------------------------------------------------------------ 
+
+what would you do if your Jenkins build is stuck in the queue?
+
+If your Jenkins build is stuck in the queue:
+
+Check if any agents are available – the build may be waiting for an executor.
+
+Make sure the agent with the right label is online – the job might be assigned to a specific label.
+
+Look for other running builds – your job could be waiting for a lock or resource.
+
+Restart the agent or Jenkins – if things seem frozen or unresponsive.
+
+------------------------------------------------------------ 
+
+how would you setup a CI/CD for a microservice-based application?
+
+1. Put each microservice in a Git repo (or all in one repo if preferred).
+
+2. Use Docker to containerize each microservice.
+
+3. Set up CI using Jenkins
+
+4. Set up CD using ArgoCD
+
+5. Use Grafana and Promotheous for metrics
+
+6. Use Elasticsearch, Kibana for logging
+
+------------------------------------------------------------ 
+
+How would you build artifacts once and reuse them across environments?
+
+                          or
+
+How would you promote builds between Dev, QA and Prod?
+
+1. Build the artifact once in the Dev environment (e.g., a Docker image or .jar file).
+
+2. Store it in a central place like Docker Hub, AWS ECR, or Artifactory.
+
+3. Use the same artifact in QA and Prod by pulling it from the registry—don’t rebuild it.
+
+4. Use tags to mark the artifact (e.g., my-app:1.0.0, my-app:qa, my-app:prod).
+
+5. Automate this with a CI/CD pipeline and use manual approval before deploying to Prod.
+
+------------------------------------------------------------
+
+Suppose a deployment fails in production - how will you diagnose the issue?
+
+1. Check deployment logs from the CI/CD pipeline for errors.
+
+2. Look at application logs (e.g., server or container logs) to see what went wrong.
+
+3. Monitor system metrics (CPU, memory, response times, error rates).
+
+4. Check recent changes: code, config, environment variables, or secrets.
+
+5. Reproduce the issue in staging if possible.
+
+6. Rollback the deployment if the issue is critical.
+
+------------------------------------------------------------
