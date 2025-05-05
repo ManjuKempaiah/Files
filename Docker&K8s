@@ -212,6 +212,8 @@ docker stats container_id --- To Check resource usage of running container
 
 docker run -e DB_PASSWORD=$DB_PASSWORD myapp
 docker commit <container-id> recovered-image
+docker run --restart=always my-app
+docker run --restart=on-failure:5 my-app
 
 
 ---------------------------------------------------------------------
@@ -1162,31 +1164,25 @@ How do you automatically restart failed containers in production?
 
 If a containerized app fails in production, how would you trouble shoot it?
 
-1. Check Container Status
-   
-   docker ps -a
-
-   Or in Kubernetes: 
-
-   kubectl get pods
-   kubectl describe pod <pod-name>
-
-2. Inspect Logs
+1. Check Container Status:
+   In docker docker ps -a , In Kubernetes kubectl get pods  
+ 
+2. Check Logs:
 
   docker logs <container_id>
-
   kubectl logs <pod-name>
 
-3. Check Events
+3. Check Events:
 
-  kubectl get events 
+  kubectl get events
+  kubectl describe pod <pod-name>
 
-4. Check Resource Usage
+4. Check Resource Usage:
    
    docker stats container_id
    kubectl top pod <pod-name>
 
-5. Run Container Interactively
+5. Run Container Interactively:
    
    docker exec -it <container_id> bash
    kubectl exec -it <pod-name> -- /bin/bash
@@ -1240,7 +1236,8 @@ Who do you manage secrets inside docker container?
 
 A container keeps restarting - how would you bedbug it?
                      or
-A Docker container keeps existing immediately after starting - how would you trouble shoot it?
+A Docker container keeps existing immediately after starting - 
+how would you trouble shoot it?
 
  1. Check Container Logs
  2. Check Restart Policy
