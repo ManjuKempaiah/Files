@@ -371,11 +371,74 @@ How do you provide sudo access to user?
 what is the difference betwee ping and telnet? 
 what happens if you delete file that is being used by running process?
 
+---------------------------------------------------------------------
 
+1. What is the difference between a process and a thread?
+Process: An independent program in execution. Has its own memory space.
 
+Thread: A lightweight subprocess that shares memory with 
+        other threads in the same process.
 
+---------------------------------------------------------------------
 
+2. How do you schedule tasks using cron?
 
+Edit crontab: crontab -e
 
+Syntax:
+
+sql
+Copy
+Edit
+* * * * * /path/to/command
+┬ ┬ ┬ ┬ ┬
+│ │ │ │ │
+│ │ │ │ └─── Day of week (0 - 7) [Sunday=0 or 7]
+│ │ │ └───── Month (1 - 12)
+│ │ └─────── Day of month (1 - 31)
+│ └───────── Hour (0 - 23)
+└─────────── Minute (0 - 59)
+
+---------------------------------------------------------------------
+
+3. What is SELinux?
+
+Security-Enhanced Linux. A kernel module that provides 
+a mechanism for enforcing security policies. Common in Red Hat-based systems
+
+---------------------------------------------------------------------
+
+4. Explain runlevels in Linux.
+
+They define system states (SysV init-based systems):
+
+0: Halt
+
+1: Single-user
+
+3: Multi-user (text)
+
+5: Multi-user (GUI)
+
+6: Reboot
+
+---------------------------------------------------------------------
+
+5. What is the difference between fork() and exec()?
+
+fork(): Creates a new child process identical to the parent.
+
+exec(): Replaces the current process image with a new process image.
+
+---------------------------------------------------------------------
+
+6. How do you manage services in systemd systems?
+
+systemctl start <service>
+systemctl stop <service>
+systemctl enable <service>
+systemctl status <service>
+
+---------------------------------------------------------------------
 
 
