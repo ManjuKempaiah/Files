@@ -293,9 +293,6 @@ To find failed pods across all namespaces, add the -A flag:
 kubectl get pods -A --field-selector=status.phase=Failed
 
 
-kubectl describe deployment deployment_name -n namespace
-
-
 kubectl rollout status deployment deployment_name -n namespace
 kubectl rollout undo deployment deployment_name -n namespace
 kubectl rollout undo deployment deployment_name -n namespace --to-revision=n
@@ -307,11 +304,12 @@ kubectl describe deployment deployment_name -n namespace
 kubectl scale deployment <deployment_name> -n <namespace> --replicas=3
 Kubectl scale rs nginx -n namespace --replicas=n
 
-kubectl set image deployment <deployment-name> <container-name>=<image-name>:<tag>
+kubectl set image deployment <deployment-name> -n namespace <container-name>=<image-name>:<tag>
 kubectl top pod <pod-name>
 
 kubectl get pods --show-labels -n <namespace>
 kubectl get endpoints <service-name> -n <namespace>
+
 sudo systemctl stop kubelet
 sudo systemctl start kubelet
 
@@ -1199,7 +1197,7 @@ How do you securely pass environment variables to a container?
  1. Use -e or --env-file (for basic usage)
  2. Use Docker Secrets
  3. Use Kubernetes Secrets (if using K8s)
- 4. Use a Secret Manager
+ 4. Use Secret Management Tools
 
  --------------------------------------------------------------------
 
@@ -1257,7 +1255,39 @@ How would you optimize container startup times?
 
 --------------------------------------------------------------------
 
+What is the difference between Docker and Podman? 
 
+Docker                              Podaman
 
+Docker uses to daemon to run        Podman Daemonless
+continers
 
+Dcoker run as a root                Podaman run without root
 
+Less secure                         More secure
+
+--------------------------------------------------------------------
+
+How do containers communicate with each other in the same network?
+
+By using Bridge Network
+
+--------------------------------------------------------------------
+
+How do you expose and access ports in Docker?
+
+docker run -d -p <host_port>:<container_port> --name container_name <image_name>:<tag>
+
+--------------------------------------------------------------------
+
+How do you monitor Docker containers in production?
+
+1. Docker CLI tools:
+
+   docker stats 
+   docker logs container_id
+2.Use Grafana and Promethous for metrics.
+3.Use Elasticsearc and Kibana for logging
+4.Use Docker Health Checks
+
+--------------------------------------------------------------------
