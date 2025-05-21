@@ -1,0 +1,198 @@
+ansible webservers -m yum -a 'name=git state=present' --become
+ansible-playbook varibles.yml
+ansible-playbook apache.yml --limit @apache.retry
+ansible localhost -m setup
+
+ansible-vault encrypt filename
+ansible-vault decrypt filename
+ansible-vault view filename
+anisble-vault edit filename
+
+ansible-playbook variables.yml --ask-vault-pass
+ansible-playbook variables.yml --vault-password-file=path_to_password_file
+
+ansible-playbook apache.yml --tags=deploy
+ansible-playbook apache.yml --tags=deploy,start
+
+ansible-playbook apache.yml --skip-tags=deploy
+ansible-playbook apache.yml --skip-tags=deploy,start
+
+
+ansible-playbook apache.yml --limit=web
+ansible-playbook apache.yml --limit=web[0]
+ansible-playbook apache.yml --limit=web[0:4]
+ansible-playbook apache.yml --limit=server1,server2
+ansible-playbook -i hosts apache.yml --limit <server_name>
+ansible-playbook -i hosts apache.yml --limit server1,server2
+
+/etc/ansible/hosts --- Default Inventtory Location
+
+----------------------------------------------------
+
+delegate_to:localhost
+delegate_to:192.168.1.100
+
+serial:3
+
+-----------------------------------------------------
+
+'ignore_errors'
+'failed_when'
+'block' and 'rescue'
+
+-----------------------------------------------------
+
+assert
+check_mode
+manual run
+
+-----------------------------------------------------
+
+yum,apt,copy,service,setup,file,template,debug,synchronize,
+shell,script,service,user,group,aws,azure,gcp,mysql,postgresql,
+mangodb,dynamodb,git,docker,kubectl,network,firewall.
+
+
+------------------------------------------------------
+
+Nginx playbook
+
+- hosts: 172.31.41.58
+  become: True
+  tasks:
+    - name: configure nginx rpm
+      yum: name=http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+    - name: install nginx
+      yum:
+        name: nginx
+        state: present
+    - name: copy nginx config file
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+      notify:
+          - restart nginx
+    - name: start and enable
+      service:
+        name: nginx
+        state: started
+        enabled: True
+  handlers:
+    - name: restart nginx
+      service :
+        name: nginx
+        state: restarted
+
+Adds the Nginx repository to the system for package installation.
+
+Copying the nginx.conf file from the current machine to the /etc/nginx/nginx.conf directory on the target machine ensures that the Nginx server on the target machine is configured according to the specifications defined in the nginx.conf file.
+
+--------------------------------------------------------------------------------------------------------------------
+
+Apache playbook
+
+- hosts: 172.31.36.99
+  become: True
+  tasks:
+    - name: install apache
+      yum:
+        name: httpd
+        state: present
+    - name : put sample html file on apache
+      copy:
+        src: index.html
+        dest: /var/www/html
+    - name: start and enable apache
+      service:
+        name: httpd
+        state: started
+        enabled: True     
+
+-------------------------------------------------------------------------------------------------------------------
+
+Can you please write ansible playbook conditionally install a package,if it is linux how to install package,if it is ubuntu how to install a package.
+
+- hosts: 172.31.36.99
+  become: True
+  tasks:
+    - name: install apache on linux
+      yum:
+        name: httpd
+        state: present
+      when: ansible_facts['os_family'] == "RedHat"
+    - name: install apache on ubuntu
+      apt:
+        name: apache2
+        state: present
+      when: ansible_facts['os_family'] == "Debian"
+
+-------------------------------------------------------------------------------------------------------------------
+
+Docker install
+
+- hosts: localhost
+  become: True
+  tasks:
+    - name: install docker
+      yum:
+        name: docker
+        state: present
+    - name: Grant ec2-user permissions on docker
+      command:
+        cmd: "usermod -a -G docker ec2-user"
+    - name: start docker
+      service:
+        name: docker
+        state: started
+
+-------------------------------------------------------------------------------------------------------------------
+
+node.js install 
+
+- name: Install Node.js
+  hosts: your_target_hosts
+  become: yes
+  tasks:
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+      when: ansible_distribution == 'Ubuntu'
+    - name: Install Node.js on CentOS
+      yum:
+        name: nodejs
+        state: present
+      when: ansible_distribution == 'CentOS'
+    - name: Install Node.js on Amazon Linux
+      yum:
+        name: nodejs
+        state: present
+      when: ansible_distribution == 'Amazon'
+
+-------------------------------------------------------------------------------------------------------------------
+
+Copy file from EC2 to target machine
+
+- name: Copy file from EC2 to target machine
+  hosts: target_machine
+  become: yes
+  tasks:
+    - name: Copy file from EC2 to target machine
+      copy:
+        src: /path/to/source/file/on/ec2
+        dest: /path/to/destination/folder/on/target_machine
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
