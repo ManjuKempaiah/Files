@@ -468,7 +468,7 @@ Path to the interpreter that should execute the script.
 --------------------------------------------------------
 
 Environmental Variable in Jenkins are key-value pairs used to pass 
-information to jobs,pipelines,scripts during the build process.
+information to jobs,pipelines, and scripts during the build process.
 
 --------------------------------------------------------
 
