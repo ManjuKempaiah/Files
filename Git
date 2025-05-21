@@ -1,0 +1,300 @@
+          Your Local Machine
+          ─────────────────────────────────
+    [Working Directory]
+            ↓  git add
+    [Staging Area]
+            ↓  git commit
+    [Local Repository]
+            ↓  git push
+    [Remote Repository (GitHub)]
+
+
+git init
+git clone
+cd git-manju
+code .
+
+git config --global user.name "user_name"
+git config --global user.email "manjukempaiah31@gmail.com"
+
+git status
+git add <file_name>
+git add *
+git add .
+
+git restore --staged <file_name>
+git restore <file_name>
+
+git commit -m 'committing message'
+git commit -a -m 'committing message'
+
+
+git reset commit_id
+git reset --soft commit_id   --- Remove the commit and keep the changes in Staging area
+git reset --mixed commit_id  --- Remove the commit and keep the changes in Working area
+git reset --hard commit_id   --- Remove the commit and dicard the changes permanently
+git reset --hard HEAD~2      --- To delete the last two commits in git
+
+git push origin main
+git revert commit_id
+
+
+git stash -m 'stashing abc'
+git stash list
+git stash apply
+git stash pop
+git stash drop
+
+git log
+git log --oneline main
+git log --oneline -r
+git log --oneline -l
+git log --oneline -5
+git log --since=10days
+
+git log --since="3 months ago" <file-name>
+git log -L <start>,<end>:<file-name>
+
+git blame file_name
+git blame -L 10,20 <file-name>  # lines 10 to 20
+git blame -L 15,15 <file-name>
+git annotate file_name
+git reflog
+
+
+git pull origin main
+git pull = fetch+merge
+git fetch = only fetch
+
+
+git branch
+git branch branch_name
+git checkout branch_name
+git checkout -b newbranch_name
+git branch -m newbranch_name
+git branch -d branch_name
+git push origin -d remotebranch_name
+git push origin --delete remotebranch_name
+git branch branch_name commit_id
+
+
+git cherry-pick commit_id
+git commit --amend
+git bisect
+git branch --merged main
+git branch --merged
+git branch --no-merged
+
+
+git branch --contains commit_id
+git fetch --no-checkout origin remotebranch_name
+git checkout remotebranch_name --path_to_file
+
+
+git update-ref -d HEAD
+
+git squash
+git rebase -i HEAD~n
+git show
+git remove file_name
+
+
+mvn package -DskipTests=true
+mvn clean 
+mvn clean package
+
+--------------------------------------------------------
+
+
+Your accidentally committed sensitive credentials to public GitHub repo
+- what steps will you take immediately?
+
+ 1. Remove the Credentials from the Repo
+
+   git rm --cached <file-with-secret>
+
+ 2. Force Push the Cleaned Repo
+
+    git push origin --force --all
+
+ 3.Check for Clones
+
+ 4.Notify Your Team
+
+---------------------------------------------------------
+
+Your git repository becomes very messy with many unnecessary commits
+- how do you clean it up?
+
+ 1. Use Interactive Rebase
+
+   This helps you squash or remove unwanted commits
+   git rebase -i HEAD~N
+
+   Change pick to squash or drop to merge or remove commits.
+ 
+ 2. Reset to Clean State (Caution)
+
+   git reset --hard <commit_id>
+
+ 3. Clean Up Local Branches
+
+   git branch -d <branch-name>
+
+---------------------------------------------------------
+
+You pushed code to the wrong branch - how would you fix it?
+
+1. Switch to the Correct Branch
+2. Cherry-pick or Merge the Commit(s)
+   
+   git cherry-pick <commit_id>
+   git merge <wrong-branch>
+
+3. Push the Correct Branch
+
+4. Undo the Push on the Wrong Branch
+   
+   git checkout <wrong-branch>
+   git reset --hard origin/<wrong-branch>  # reset to remote state
+   git push --force
+
+---------------------------------------------------------
+
+How would you setup a Git workflow to support multiple
+teams working on the same codebase?
+
+ 1. Branching Strategy
+ 2. Pull Requests (PRs)
+
+---------------------------------------------------------
+
+You need to rollback your repository to a previous 
+stable commit - what's your process?
+
+git reset --hard <commit_id>
+git push --force              (commit in the local repository)
+
+git revert <commit_id>        (commit in the remote repository)
+
+---------------------------------------------------------
+
+how would you find out who made a specific change in a code file 3 months ago?
+
+1. git blame
+
+   git blame <file-name>
+   git blame -L 10,20 <file-name>  # lines 10 to 20
+   git blame -L 15,15 <file-name>
+
+
+2. Use git log with --since
+
+   git log --since="3 months ago" <file-name>
+
+   git log -L <start>,<end>:<file-name>
+
+---------------------------------------------------------
+
+How do you squash commits before merging into the main branch?
+
+1. Checkout the Feature Branch
+
+   git checkout feature-branch
+
+
+2. Rebase Interactively
+   
+   Use interactive rebase to squash commits:
+
+   git rebase -i main
+
+   This opens a list of your commits since the branch diverged from main.
+
+3.Change pick to squash
+
+  Keep the first commit as pick
+
+  Change the rest to squash (or s)
+
+  pick  abc123  Add login feature
+  squash def456  Fix typo in login
+  squash ghi789  Clean up login code
+
+4. Push with Force
+
+  git push --force
+
+5. Merge into Main
+
+   git checkout main
+   git merge feature-branch
+
+---------------------------------------------------------
+
+A teammate stuck with a detached HEAD state - 
+How would you help them recover?
+
+1. Check Current State
+
+  First, confirm they're in a detached HEAD state:
+
+  git status
+
+  The output will say something like:
+
+  HEAD detached at <commit-hash>
+
+2. Recover Their Work
+
+   If your teammate made changes in this state and wants to keep them, they should:
+
+   Option 1: Create a New Branch
+   Create a new branch from the current commit to save their changes:
+
+   git checkout -b <new-branch-name>
+
+   Option 2: Checkout the Original Branch
+
+   If they want to return to their original branch:
+
+   git checkout <original-branch-name>
+  
+  This will move them back to the branch they were working on before entering the detached HEAD state
+
+3. If They Made Changes in Detached HEAD
+
+  If they made commits but didn't create a branch, use:
+
+  git log
+
+  Find the commit hash of their work, and then:
+
+  git checkout -b <new-branch-name> <commit-hash>
+
+  This will create a new branch from their commit and recover their work.
+
+4. Explain the Cause
+   
+   A detached HEAD happens when they checkout a specific commit, tag, or remote branch directly (without creating a branch). It's a good idea to always create a new branch for changes.
+
+
+---------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
