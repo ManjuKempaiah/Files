@@ -36,13 +36,16 @@ nc -zv <hostname> <port>
 telnet <hostname> <port>
 
 
-How to check specific ports on remote host?
+How to check open ports on remote host?
 
 nmap <hostname> ---- To check all ports open on remotehost
  
 
 lsof -p <PID>---- to find the openfiles by a specific process
 lsof -c <process_name>
+
+lsof -u username
+lsof -p <PID> -u username
 
 
 ps -c <process_name> ----- how to check if a process is running
@@ -59,7 +62,20 @@ tail -n 5 filename
 
 
 How to redirect output to standard output and to a files?
+
 command | tee filename
+command | tee -a filename
+
+echo "Hello World" > output.txt
+cat output.txt
+Hello World
+echo "Welcome To Java Home" | tee output.txt
+cat output.txt
+Welcome To Java Home
+echo "Java Home" | tee -a output.txt
+cat output.txt
+Welcome To Java Home
+Java Home
 
 
 how to find files consuming more space?
@@ -81,15 +97,22 @@ df -h -- It displays the information about each file system
 du stands for disk utilization. To check disk usage of specific files or directories.
 du -sh
 
+touch manju.txt  To create a file
+cat > manju.txt  To add content to the file first time
+cat >> manju.txt To add content to the file from ssecond time
+
 grep stands for Global Regular Expression Print
 
-grep -c "<pattern>" filename ---- To count the number of occurences of specific pattern in a file and to display the count
-grep "<pattern>" filename ----- To search the lines containing specific pattern in a file and display those lines
+grep -c "pattern" filename ---- To count the number of occurences of specific pattern in a file and to display the count
+grep "pattern" filename ----- To search the lines containing specific pattern in a file and display those lines
 grep -o "word" filename | wc -l ----- To find the number of occurences of word in a file
+grep -oi "word" filename | wc -l ---- To find the number of occurences of word in a file with casesensitive 
+                                      and caseinsensitive
+greo -oiE "word1|word2" filename | wc -l
 -o: This option instructs grep to only print the matching parts of the line, instead of the entire line.
 
 
-grep -C 5 <"pattern"> filename 
+grep -C 5 "pattern" filename 
 is used to search for a specific pattern in a file and display the matching lines along with 5 lines of context before and after each match
 
 
@@ -193,15 +216,17 @@ scp target/chatbot.war ec2-user@192.168.1.100:/opt/tomcat9/webapps
 Ans: find /path/to/directory -type f -mtime +30 -delete
 
 10.Diff b/w chmod and chown?
-Ans: chmod - To Change the permissions of files and dircetories
-     chown - To Change the ownership of files and directories 
-     chgrp - To change the group ownership of files or directories.
-     usermod - To modify user account
+Ans: chmod    - To Change the permissions of files and dircetories
+     chown    - To Change the ownership of files and directories 
+     chgrp    - To change the group ownership of files or directories
+     usermod  - To modify user account
+     tar      - A Linux utility used for compressing and extracting archive files
 
-     ll - long list -- To see the files and directories permissions
-     ls -l - To list files and directories in the current directory in long format. 
-
-     tar → A Linux utility used for compressing and extracting archive files.
+     ll       - long list -- To see the files and directories permissions
+     ls -l    - To list files and directories in the current directory in long format
+     wget     - Download the files from web
+     curl     - used to transfer data to or from a server using various network protocols
+     
 
 chgrp groupname file1.txt file2.txt dir1
 
@@ -387,9 +412,6 @@ Edit crontab: crontab -e
 
 Syntax:
 
-sql
-Copy
-Edit
 * * * * * /path/to/command
 ┬ ┬ ┬ ┬ ┬
 │ │ │ │ │
@@ -410,17 +432,16 @@ a mechanism for enforcing security policies. Common in Red Hat-based systems
 
 4. Explain runlevels in Linux.
 
-They define system states (SysV init-based systems):
+| Runlevel | Meaning                                          |
+| -------- | ------------------------------------------------ |
+| 0        | **Halt** (shuts down the system)                 |
+| 1        | **Single-user mode** (maintenance)               |
+| 2        | Multi-user mode (no networking on some systems)  |
+| 3        | **Multi-user mode with networking** (text-based) |
+| 4        | Unused / user-definable                          |
+| 5        | **Graphical mode (GUI)**                         |
+| 6        | **Reboot**                                       |
 
-0: Halt
-
-1: Single-user
-
-3: Multi-user (text)
-
-5: Multi-user (GUI)
-
-6: Reboot
 
 ---------------------------------------------------------------------
 
