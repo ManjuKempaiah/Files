@@ -27,8 +27,8 @@ sudo su       --- switch to the root
 su - ec2-user --- switch to the ec2-user 
 cd            --- change directory
 cd ~          --- navigate to the home directory of the current user
-ll            --- List Files with Detailed Information
-ls -l         --- lists files and directories in long format
+ll            --- long list -- To see the all files and directories permissions
+ls -l         --- To list files and directories in the current directory in long format.
 df            --- Stands for disk free, This command diplays the amount of free and used diskapce on file system
 df -h         --- This command diplays the information about each file system
 du            --- Stands for diskusage, To check the disk usage of specific files and directories
@@ -48,10 +48,11 @@ sudo systemctl enable httpd
 lsblk
 sudo mkfs.ext4 /dev/nvme1n1 
 sudo mkdir /myvol
-sudo mount /dev/nvme1n /myvol/
+sudo mount /dev/nvme1n1 /myvol/
 sudo vi /etc/fstab
 sudo blkid /dev/nvme1n1
 sudo resize2fs /dev/nvme1n1
+sudo growpart /dev/nvme1n1
 
 cd /opt/
 sudo yum list | grep java-17
