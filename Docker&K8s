@@ -122,7 +122,8 @@ docker rm -f $(docker ps --filter="status=running" -q)
 docker images
 docker rmi image_id
 docker rmi -f image_id
-docker rmi -f $(docker images -q) (removes all the images including dangling and non-dangling)
+docker rmi -f $(docker images -q)  (removes all the images including dangling and non-dangling and also 
+                                   currently being used by running containers.)
 docker images --filter="dangling=true" -q
 docker images -f="dangling=true" -q
 docker images -f "dangling=true" -q
@@ -253,9 +254,17 @@ ls
 
 ----------------------------------------------------------------------
 
+Kubectl create sends a request to Kubernetes API Server
+
+The API Server validates the request and stores the resource defintion in etcd
+
+
 kubectl run myapp --image=nginx --port=80
 kubectl run nodeapp --image=manjukempaiah/node-web-app --port=8080
 kubectl expose pods/myapp --type="NodePort" --port 8080
+
+kubectl expose deployment nginx --port=80 --target-port=80 --type=NodePort
+
 
 eksctl create cluster --name=jhc-aug-dev
 eksctl create cluster --name=jhc-aug-dev --nodes=5
@@ -277,6 +286,9 @@ kubectl describe pod <pod_name> -n namespace | grep "Restart Count"
 kubectl exec -it <pod_name> -- /bin/bash
 kubectl exec -it pod_name -c container_name -- /bin/bash
 kubectl get pods -o wide
+kubectl top pod <pod-name>
+kubectl get pods --show-labels -n <namespace>
+kubectl get endpoints <service-name> -n <namespace>
 
 
 To find pods that are not ready
@@ -305,10 +317,7 @@ kubectl scale deployment <deployment_name> -n <namespace> --replicas=3
 Kubectl scale rs nginx -n namespace --replicas=n
 
 kubectl set image deployment <deployment-name> -n namespace <container-name>=<image-name>:<tag>
-kubectl top pod <pod-name>
 
-kubectl get pods --show-labels -n <namespace>
-kubectl get endpoints <service-name> -n <namespace>
 
 sudo systemctl stop kubelet
 sudo systemctl start kubelet
@@ -352,10 +361,14 @@ Nginx playbook
         name: nginx
         state: restarted
 
+Installs the NGINX repository package so that yum can access official NGINX packages.
+
 Copying the nginx.conf file from the current machine to the /etc/nginx/nginx.conf directory on the target machine ensures that the Nginx server on the target machine is configured according to the specifications defined in the nginx.conf file.
 
 This triggers the restart nginx handler whenever the file is changed.
 Handlers run only if the task makes changes (e.g., if nginx.conf is modified).
+
+RPM -- RedHat Package Manager
 
 -------------------------------------------------------------------------------------------------------------------
 
@@ -1287,7 +1300,7 @@ How do you monitor Docker containers in production?
    docker stats 
    docker logs container_id
 2.Use Grafana and Promethous for metrics.
-3.Use Elasticsearc and Kibana for logging
+3.Use Elasticsearch and Kibana for logging
 4.Use Docker Health Checks
 
 --------------------------------------------------------------------
