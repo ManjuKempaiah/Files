@@ -599,30 +599,6 @@ sudo → Runs the command with superuser (root) privileges.
 ------------------------------------------------------------------
 -R → Recursively applies changes to all files and subdirectories.
 ------------------------------------------------------------------
-Copying the nginx.conf file from the current machine to the 
-/etc/nginx/nginx.conf directory on the target machine ensures 
-that the Nginx server on the target machine is configured according
-to the specifications defined in the nginx.conf file.
--------------------------------------------------------------------
-
-resources: Defines the resource requirements and limits for the container.
-
-requests: Specifies the minimum amount of resources the container needs.
-
-limits: Sets upper limits on the resources the container can consume.
-
---------------------------------------------------------------------
-
-ports: Specifies the ports to open on the Service.
-
-port: 80: Defines that the Service should listen on port 80.
-
-targetPort: 80: Specifies that the traffic should be forwarded to Pods on port 80.
-
-nodePort: 30000: Opens a specific port on all nodes in the cluster,
-allowing external traffic to reach the Service.
-
---------------------------------------------------------------------------
 
 maxSurge: Represents the maximum number or percentage of Pods that can be 
 created above the desired number of replicas during an update. Here, it is set to 25%.
@@ -655,14 +631,6 @@ targetPort: 80: Specifies that the traffic should be forwarded to Pods on port 8
 
 nodePort: 30000: Opens a specific port on all nodes in the cluster,
 allowing external traffic to reach the Service.
-
---------------------------------------------------------------------------
-
-maxSurge: Represents the maximum number or percentage of Pods that can be 
-created above the desired number of replicas during an update. Here, it is set to 25%.
-
-maxUnavailable: Represents the maximum number or percentage of Pods that can be 
-unavailable (not running) during an update. Here, it is set to 25%.
 
 --------------------------------------------------------------------------
 
@@ -740,9 +708,9 @@ Termination Protection--> Enable --> Save Changes
 
 -------------------------------------------------------------------------------
 
-Elastic Beanstalk is a cloud service by AWS that makes it easy to
-deploy and manage applications. It automatically handles infrastructure,
-scaling, and monitoring.
+Elastic Beanstalk is a cloud service by AWS that simplifies the
+deployment and management of applications. It automatically handles 
+the infrastructure,scaling, and monitoring.
 
 1. Infrastructure as a Service (IaaS)
 
@@ -951,7 +919,7 @@ ELB, CloudFront, Route 53, AWS Global Accelerator
 
 ------------------------------------------------------------------
 
-9.How does AWS handles data encryption at rest and in transit
+9.How does AWS handles data encryption at rest and in transit?
 
 At rest:Use KMS keys, S3 Server-Side Encrytion, EBS Encryption,
 RDS Encryption
@@ -1031,7 +999,8 @@ and the DLQ(Dead Letter Queue) if configured.
 
 ------------------------------------------------------------------
 
-
+"I’m looking for new challenges and opportunities to 
+grow my skills in DevOps and AWS.
 
 
 
