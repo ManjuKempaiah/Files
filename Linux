@@ -2,17 +2,31 @@ top or htop command to check cpu utilization
 
 free or top command to check memory utilization
 
-uname -r ---- to check the kernel version on linux 
-uname -a 
+uname -r  -- To dispaly the kernel version on linux 
+uname -a  -- To dispaly all available system information
+cat /etc/os-release -- To display detailed information about the Linux operating system 
 
+runlevels in Linux
 
 init 0 - command to shutdown the  linux system
-
+init 1 - Single-user mode
+init 2 - Multi-user mode
+init 3 - Multi-user mode with network
+init 4 - Unused
+init 5 - Graphical mode
 init 6 - command to reboot the linux system
+
+
+ls -i filename -- To Check inode of the file
+
+
+ln file1 file2
+ln -s file1 file2
 
 
 lscpu --- to check number of cpus on linux system
 nproc
+
 
 getent passwd --- to list the users on linux system
 
@@ -52,10 +66,16 @@ ps -c <process_name> ----- how to check if a process is running
 pgrep <process_name>
 
 
+ps -ef  --- To find the running processes on linux system  
+
+ps -ef | grep <process_name>  ---- To find the PID
+
+
 ps aux | grep <process_name>   ---- To find the PID
 pgrep <process_name>
 
 kill PID --- To Kill a process
+
 
 head -n 5 filename
 tail -n 5 filename
@@ -86,12 +106,13 @@ du -a | sort -n -r | head -n 10
 How to find top 5 processes consuming more memory?
 
 By using ps command along with sort and head command
+
 ps aux --sort=-%mem | head -n 5 
 
 
 df and du command to check disk utilization.
 
-df stands for disf free.This command displays the amount free and used disk space on the file system
+df stands for disk free.This command displays the amount free and used disk space on the file system
 df -h -- It displays the information about each file system
 
 du stands for disk utilization. To check disk usage of specific files or directories.
@@ -99,6 +120,7 @@ du -sh
 
 touch manju.txt  To create a file
 cat > manju.txt  To add content to the file first time
+Enter Ctrl + D -- To save and exit the file
 cat >> manju.txt To add content to the file from ssecond time
 
 grep stands for Global Regular Expression Print
@@ -118,6 +140,9 @@ is used to search for a specific pattern in a file and display the matching line
 
 𝐇𝐨𝐰 𝐭𝐨 𝐬𝐞𝐚𝐫𝐜𝐡 𝐦𝐮𝐥𝐭𝐢𝐩𝐥𝐞 𝐰𝐨𝐫𝐝𝐬 𝐚𝐧𝐝 𝐝𝐢𝐬𝐩𝐥𝐚𝐲 𝐦𝐚𝐭𝐜𝐡𝐢𝐧𝐠 𝐜𝐨𝐧𝐭𝐞𝐧𝐭 𝐟𝐫𝐨𝐦 𝐚 𝐟𝐢𝐥𝐞 𝐢𝐧 𝐋𝐢𝐧𝐮𝐱?
 grep -E 'word1|word2|word3' filename
+
+How do find lines with the "ERROR" in multiple .log files, showing filename and line number?
+grep -n "ERROR" *.log 
 
 wc -l filename --- To find the number of lines in a file
 wc -w filename --- To find the number of words ina file
@@ -148,7 +173,7 @@ By using sudo systemctl restart sshd
 How to provide sudo access to user?
 
 Add user to sudo group
-sudo chmod -a -G sudo username
+sudo usermod -a -G sudo username
 Edit sudoers file
 sudo visudo
 To allow specific user to use sudo add a line like this
@@ -201,7 +226,7 @@ cmp file1 file2
 sort filename       alphabetically ascending order
 sort -r filename    descending order
 
-6. 𝐇𝐨𝐰 𝐭𝐨 𝐝𝐢𝐬𝐩𝐥𝐚𝐲 𝐔𝐍𝐈𝐐𝐔𝐄 𝐜𝐨𝐧𝐭𝐞𝐧𝐭 𝐟𝐫𝐨𝐦 𝐚 𝐟𝐢𝐥𝐞 𝐢𝐧 𝐋𝐢𝐧𝐮𝐱?
+6. 𝐇𝐨𝐰 𝐭𝐨 𝐝𝐢𝐬𝐩𝐥𝐚𝐲 𝐔𝐍𝐈𝐐𝐔𝐄 𝐜𝐨𝐧𝐭𝐞𝐧𝐭 𝐟𝐫𝐨𝐦 𝐚 𝐟𝐢𝐥𝐞 𝐢𝐧 𝐋𝐢𝐧𝐮𝐱? ప్రత్యేకమైనది
 uniq filename
 sort filename | uniq
 
@@ -215,7 +240,27 @@ scp target/chatbot.war ec2-user@192.168.1.100:/opt/tomcat9/webapps
 9.How do you delete 30 days old files?
 Ans: find /path/to/directory -type f -mtime +30 -delete
 
-10.Diff b/w chmod and chown?
+/path/to/directory → Replace with the folder you want to clean up.
+
+-type f → Targets files only.
+
+-mtime +30 → Matches files modified more than 30 days ago.
+
+-delete → Deletes the matching files.
+
+
+10.How do find all log files that are modified in the last 7 days?
+Ans: find /path/to/directory -type f -name *.log -mtime -7
+
+/path/to/search → Directory where you want to search (e.g., /var/log).
+
+-type f → Looks for files only.
+
+-name "*.log" → Matches files with .log extension.
+
+-mtime -7 → Modified within the last 7 days
+
+11.Diff b/w chmod and chown?
 Ans: chmod    - To Change the permissions of files and dircetories
      chown    - To Change the ownership of files and directories 
      chgrp    - To change the group ownership of files or directories
@@ -288,8 +333,25 @@ userdel <user_name> <group_name>
 7.How do you troubleshoot high cpu usage in linux?
   By using top or htop command.
 
+8.Explain Netork troubleshooting utility?
+  ping google.com
+  traceoute google.com
+
+9.How do you edit a file without opening?
+  By using sed command
+
+10.How to check previous command executed sucessfully or not?
+   $?
+   Sucess code is 0(Zero) command executed sucessfully
+   Sucess code is 2(two) command not executed sucessfully
+
+11.How do you determine the IP address associated with a specific domain name?
+   nslookup google.com
+
 
 ---------------------------------------------------------------------
+
+
 ll -- long list -- To see the all files and directories permissions
 
 File and Directory Permissions in Linux
@@ -412,7 +474,7 @@ Edit crontab: crontab -e
 
 Syntax:
 
-* * * * * /path/to/command
+* * * * * command to execute
 ┬ ┬ ┬ ┬ ┬
 │ │ │ │ │
 │ │ │ │ └─── Day of week (0 - 7) [Sunday=0 or 7]
@@ -462,4 +524,12 @@ systemctl status <service>
 
 ---------------------------------------------------------------------
 
+7. Hard Link                                Soft Link
 
+  Hard Link files as same inode number      Soft Link files as different number
+
+  Hard Links created to only files          Soft Link created to files and directoris
+
+  Hard Link created in the same partition   Soft Link created in the same partition                            
+                                            and between different partitions
+---------------------------------------------------------------------
