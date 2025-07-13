@@ -75,4 +75,7 @@ aws ec2 stop-instances --instance-ids instance_id instance_id
 aws ec2 reboot-instances --instance-ids instance_id instance_id
 aws ec2 terminate-instances --instance-ids instance_id instance_id
 
+Static = మారని 
+Dynamic = మారుతుండే
+
 
