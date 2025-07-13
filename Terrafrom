@@ -19,7 +19,12 @@ terraform state push backup.tfstate
 
 terraform state pull > backup.tfstate     (To Download the terraform state file from remote backend to Local      directory)
 
-terraform state list
+terraform state list  To list the resources created by terraform
+terraform state rm    Removes a resource from the Terraform state without deleting the actual infrastructure
+terraform state mv    Moves or renames a resource in the Terraform state
+
+terraform state move aws_instance.old_name aws_instance.new_name
+
 
 terraform apply -auto-approve --target=resource_type.logical_name
 terraform apply -auto-approve --target=aws_subnet.main
@@ -29,7 +34,7 @@ terraform destroy -auto-approve --target=aws_subnet.main
 
 
 terraform apply -auto-approve -var region=eu-north-1
-terraform apply -auto-approve -var-file=dev.tfvars
+terraform apply -auto-approve -var-file=dev.tfvars 
 
 terraform.tfstate
 
@@ -303,3 +308,44 @@ If env is true, then count = 1 → internet_gateway will be created.
 If false, then count = 0 → no internet_gateaway will be created.
 
 --------------------------------------------------------------------
+
+Terraform Dependencies:
+
+1. Implicit Dependencies
+2. Explicit Dependencies using depends_on
+
+--------------------------------------------------------------------
+
+ **Terraform**               | **Pulumi**                                  |
+ --------------------------- | ------------------------------------------- |
+ Uses its own language (HCL) | Uses real languages like Python, JavaScript |
+ Declarative (what you want) | Imperative + Declarative (how + what)       |
+ Less flexible               | More flexible with programming logic        |
+ Easier for beginners        | Easier if you know programming              |
+ More widely used            | Growing, but less popular than Terraform    |
+
+--------------------------------------------------------------------
+
+S3 bucket names are unique because they are used in web URLs, 
+and each URL must point to only one bucket. So, to avoid confusion
+and ensure correct access. 
+
+--------------------------------------------------------------------
+
+terrafrom import     -- Brings existing resources under terraform control
+terraform state      -- Manages state(list,move,remove resources)
+terraform state list -- To list the resources created by terraform
+terraform state rm   -- Removes a resource from the Terraform state 
+                        without deleting the actual infrastructure
+terraform state mv   -- Moves or renames a resource in the Terraform state
+terraform fmt        -- Formats the Code -- To Check the alignment of the code
+terraform validate   -- Validates the Code -- To Check the Syntax of the code
+count                -- Creates multiple identical resources (count=3).
+for_each             -- Creates resources based on a map/set(dynamic keys)
+
+terraform state push backup.tfstate   -- To Upload the terraform state file
+                                         to remote backend
+terraform state pull > backup.tfstate -- To Download the terraform state file 
+                                         from remote backend to Local directory
+--------------------------------------------------------------------
+
