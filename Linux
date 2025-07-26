@@ -29,13 +29,15 @@ nproc
 
 
 getent passwd --- to list the users on linux system
+cat /etc/passwd
 
 getent group ---- to list the groups on linux system
+cat /etc/group
 
 getent group <group_name> --- to list the users in group
 
 
-To check open ports on linux we can use netstat or ss(socket statistics) command
+To check open ports on linux we can use netstat(network statistics) or ss(socket statistics) command
 
 netstat -tuln
 ss -tuln
@@ -66,19 +68,20 @@ ps -c <process_name> ----- how to check if a process is running
 pgrep <process_name>
 
 
-ps -ef  --- To find the running processes on linux system  
+ps -ef  --- To find the running processes on linux system 
+ps
+ps aux
+ps -o ux 
 
 ps -ef | grep <process_name>  ---- To find the PID
-
-
 ps aux | grep <process_name>   ---- To find the PID
 pgrep <process_name>
 
 kill PID --- To Kill a process
 
 
-head -n 5 filename
-tail -n 5 filename
+head -n 5 filename  To display the first five lines in a file
+tail -n 5 filename  To diplay the last five lines in a file
 
 
 How to redirect output to standard output and to a files?
@@ -121,7 +124,7 @@ du -sh
 touch manju.txt  To create a file
 cat > manju.txt  To add content to the file first time
 Enter Ctrl + D -- To save and exit the file
-cat >> manju.txt To add content to the file from ssecond time
+cat >> manju.txt To add content to the file from second time
 
 grep stands for Global Regular Expression Print
 
@@ -156,6 +159,12 @@ sed -i '<n>s/old_string/new_string/' filename
 
 𝐇𝐨𝐰 𝐭𝐨 𝐝𝐢𝐬𝐩𝐥𝐚𝐲 𝐚 𝐬𝐩𝐞𝐜𝐢𝐟𝐢𝐜 𝐥𝐢𝐧𝐞 𝐟𝐫𝐨𝐦 𝐚 𝐟𝐢𝐥𝐞?
 sed -n 'x{p;q}' filename
+
+How do you edit a file without opening?
+sed -i '3s/.*/This is replaced line 3/' filename
+
+.* -- regex Expression
+
 
 ps -o ux --- To display the list of running processes in a simplified format
 
@@ -267,10 +276,12 @@ Ans: chmod    - To Change the permissions of files and dircetories
      usermod  - To modify user account
      tar      - A Linux utility used for compressing and extracting archive files
 
-     ll       - long list -- To see the files and directories permissions
-     ls -l    - To list files and directories in the current directory in long format
-     wget     - Download the files from web
-     curl     - used to transfer data to or from a server using various network protocols
+     ll            - long list -- To see the files and directories permissions
+     ls -l         - To list files and directories in the current directory in long format
+     wget          - Download the files from web
+     curl          - used to transfer data from a server or to a server using various network protocols
+     sudo su       - Switch to root user
+     su - ec2-user - Switch to ec2-user
      
 
 chgrp groupname file1.txt file2.txt dir1
@@ -278,6 +289,7 @@ chgrp groupname file1.txt file2.txt dir1
 ps aux 
 ps 
 ps -o ux
+ps -ef
 
 ---------------------------------------------------------------------
 
@@ -333,12 +345,15 @@ userdel <user_name> <group_name>
 7.How do you troubleshoot high cpu usage in linux?
   By using top or htop command.
 
-8.Explain Netork troubleshooting utility?
+8.Explain Network troubleshooting utility?
   ping google.com
   traceoute google.com
 
 9.How do you edit a file without opening?
   By using sed command
+  sed -i '3s/.*/This is replaced line 3/' filename
+
+  .* -- regex Expression
 
 10.How to check previous command executed sucessfully or not?
    $?
@@ -532,4 +547,10 @@ systemctl status <service>
 
   Hard Link created in the same partition   Soft Link created in the same partition                            
                                             and between different partitions
+---------------------------------------------------------------------
+
+8.What is awk command?
+
+  awk command is used to search, filter, and manipulate text or data in files.
+
 ---------------------------------------------------------------------
