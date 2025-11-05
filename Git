@@ -15,8 +15,8 @@ cd git-manju
 code .
 
 git config --global user.name "user_name"
-git config --global user.email "manjukempaiah31@gmail.com"
-
+git config --global user.email "manjukempaiah31@gmail.com"  To Set git username and email for all commits you make
+                                                            on your system.
 git status
 git add <file_name>
 git add *
@@ -45,19 +45,18 @@ git stash apply
 git stash pop
 git stash drop
 
-git log
-git log --oneline main
-git log --oneline -r
-git log --oneline -l
-git log --oneline -5
-git log --since=10days
+git log                                    Shows commit history of the current branch only
+git log main                               Shows the commit history of the branch named main
+git log --oneline main                     Shows the commit history of the branch named main in one line
+git log --oneline -5                       Show last 5 commits only in oneline format
 
-git log --since="3 months ago" <file-name>
-git log -L <start>,<end>:<file-name>
+git log --since=10days                     Shows all commits made in the entire repository within the last 10 days.
+git log --since="3 months ago" <file-name> Shows commits affecting a specific file (<file-name>) since 3 months ago
 
-git blame file_name
-git blame -L 10,20 <file-name>  # lines 10 to 20
-git blame -L 15,15 <file-name>
+
+git log -L 10,20:<file-name>               Show history of changes to a specific range of lines
+git blame -L 10,20 <file-name>             Show who last modified each line in that range
+git blame <file-name>
 git annotate file_name
 git reflog
 
@@ -91,12 +90,12 @@ git fetch --no-checkout origin remotebranch_name
 git checkout remotebranch_name --path_to_file
 
 
-git update-ref -d HEAD
+git update-ref -d HEAD        Delete the most recent commit in your local git repository
 
 git squash
 git rebase -i HEAD~n
-git show
-git remove file_name
+git show                      Shows the details of the most recent commit (HEAD).
+git rm file_name              Remove file from working directory + staging area
 
 
 mvn package -DskipTests=true
@@ -115,7 +114,7 @@ Your accidentally committed sensitive credentials to public GitHub repo
 
  2. Force Push the Cleaned Repo
 
-    git push origin --force --all
+    git push origin --force --all  Force push all local branches to remote
 
  3.Check for Clones
 
@@ -278,6 +277,131 @@ How would you help them recover?
    
    A detached HEAD happens when they checkout a specific commit, tag, or remote branch directly (without creating a branch). It's a good idea to always create a new branch for changes.
 
+
+---------------------------------------------------------
+1.Cherry Pick
+
+Got it 👍 You have:
+
+main branch
+
+feature1 branch with one commit (ID = 12345)
+You want to:
+
+Cherry-pick that commit (12345) into main
+
+Remove that commit from feature1
+
+Push the updated main to the remote repository
+
+Here’s the step-by-step Git command example 👇
+
+Step 1: Switch to the main branch
+
+git checkout main
+
+
+Step 2: Cherry-pick the commit from feature1
+
+git cherry-pick 12345
+
+✅ This copies the commit (ID 12345) from feature1 to main.
+
+If there are merge conflicts, fix them and then:
+
+git add .
+git cherry-pick --continue
+
+
+Step 3: Push the main branch to remote
+
+git push origin main
+✅ Now your remote main branch has that commit.
+
+🧩 Step 4: Remove the commit from feature1
+Now go back to the feature1 branch:
+
+git checkout feature1
+
+Then use reset to remove the last commit (12345):
+
+git reset --hard HEAD~1
+⚠️ This will permanently delete that commit from the feature1 branch.
+
+If that commit was not the last one, use:
+
+git log
+
+Find the commit just before 12345, and reset to that:
+
+git reset --hard <commit_id_before_12345>
+
+🧩 Step 5: Push changes to remote feature1 branch (force needed)
+
+Because you rewrote history, you must force-push:
+
+git push origin feature1 --force
+
+---------------------------------------------------------
+
+# Cherry-pick commit to main
+git checkout main
+git cherry-pick 12345
+git push origin main
+
+# Remove commit from feature1
+git checkout feature1
+git reset --hard HEAD~1 (If it is last commit in the feature1 branch)
+git reset --hard <commit_id_before_12345>
+git push origin feature1 --force
+
+---------------------------------------------------------
+
+2. To fix the brocken commit or to modify the last commit message
+
+# On main branch
+git checkout main
+
+# Fix last commit message
+git commit --amend
+git commit --amend -m "Fix Kubernetes deployment configuration"
+
+# Push to remote (force if already pushed before)
+git push origin main --force
+
+---------------------------------------------------------
+
+3. Merge feature4 with feature3 and delete the feature4 branch
+
+git fetch origin
+git checkout feature3
+git pull origin feature3
+git merge feature4
+# resolve conflicts if any, then:
+# git add <resolved-files>
+# git commit   # if needed
+git push origin feature3
+
+# delete local branch (safe)
+git branch -d feature4
+
+# delete remote branch
+git push origin --delete feature4
+
+---------------------------------------------------------
+4. squash the 3 commits on feature6 into a single commit, 
+   then merge that single commit into main and push main to the remote.
+
+git checkout feature6
+git fetch origin
+git pull --rebase origin feature6
+git rebase -i HEAD~3       # squash in editor
+# resolve any rebase conflicts, finish rebase
+
+git checkout main
+git pull origin main
+git merge feature6         # merges the single squashed commit
+git push origin main
 
 ---------------------------------------------------------
 
