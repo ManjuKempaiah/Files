@@ -107,33 +107,43 @@ spec:
         averageUtilization: 50  # Target average CPU utilization
 -----------------------------------------------------------------------
 
-docker ps 
-docker ps -a
-docker ps -aq
+docker ps                       used to list running containers in Docker
+docker ps -a                    lists running + stopped + exited + created containers
+docker ps -aq                   -a / --all → show all containers (running, stopped, exited, created).
+                                -q / --quiet → show only the container IDs (not the full table)
 docker rm container_id
 docker rm -f container_id
 docker rm -f $(docker ps -aq)    (removes all the containers including running and exited)   (-aq --- all conatiner_ids)
-docker ps --filter="status=exited" -q                                                       (-q --- container_ids)
+
+docker rm $(docker ps -aq)      Only stopped/exited and created(never started) containers will be removed.
+                                Running Containers will not be removed
+
+docker ps --filter="status=exited" -q         (-q --- container_ids)
 docker ps -f="status=exited" -q
 docker ps -f "status=exited" -q
 docker rm -f $(docker ps --filter="status=exited" -q)
 docker rm -f $(docker ps --filter="status=running" -q)
 
-docker images
+docker images                      lists all images
 docker rmi image_id
 docker rmi -f image_id
 docker rmi -f $(docker images -q)  (removes all the images including dangling and non-dangling and also 
                                    currently being used by running containers.)
+
+docker rmi $(docker images -q)     removes all Docker images from the local system.
+                                   Dangling images → Removed
+                                   Running container images → Not removed
+
 docker images --filter="dangling=true" -q
 docker images -f="dangling=true" -q
 docker images -f "dangling=true" -q
-docker rmi -f $(docker images --filter="dangling=true" -q)
-docker rmi -f $(docker images --filter="dangling=false" -q)
-
+docker rmi -f $(docker images --filter="dangling=true" -q)   Removes only danging images
+docker rmi -f $(docker images --filter="dangling=false" -q)  Removes Non dangling images,Running container images.
+                                                             Except dangling images
 docker logs container_id
 docker stats
 docker exec -it container_id bash
-docker inspect container_id
+docker inspect container_id         To check the IP address and Network
 docker-compose up -d
 docker-compose ps
 docker network create --driver=bridge network_name
@@ -141,9 +151,21 @@ docker network list
 docker network inspect network_name
 
 
-docker image prune -f
-docker system prune -f
-docker history image_id
+Docker Compose will:
+
+Read your docker-compose.yml file.
+Create networks, volumes, and containers as described there.
+Start those containers in the background (detached mode).
+You get your terminal prompt back immediately.
+
+
+docker image prune -f    To delete only dangling Images
+docker system prune -f   
+
+To delete unwanted networks,Volumes,Stopped container,Exited containers and dangling imgs.
+Except Running conatiner Images
+
+docker history image_id  To Check the layer size 
 
 docker volume create jenkins
 docker volume inspect jenkins
@@ -199,9 +221,9 @@ docker run -it --env-file ./manju.env manjukempaiah/tomcat:0.0.1
 
 How do you limit container resources in docker?
 
-docker run --cpus="2" --memory="512m" imagename
-docker run --cpus="2" imagename
-docker run --memory="512m" imagename
+docker run --cpus="2" --memory="512m" <image_name>    m --megabytes
+docker run --cpus="2" <image_name>
+docker run --memory="512m" <image_name>
 
 
 docker stop container_id  --- Gracefully stpos the container
@@ -211,15 +233,18 @@ docker top container_id   --- To Diplay the running processes inside the contain
 docker stats container_id --- To Check resource usage of running container
 
 
-docker run -e DB_PASSWORD=$DB_PASSWORD myapp
-docker commit <container-id> recovered-image
-docker run --restart=always my-app
-docker run --restart=on-failure:5 my-app
+docker commit <container-id> recovered-image  
+To save the current state of a running or stopped container as a new image 
+                                          
+docker run --restart=always <image_name>
+docker run --restart=on-failure:5 <image_name>
+docker run --restart=never <image_name>
 
+docker run -e DB_PASSWORD=$DB_PASSWORD myapp
 
 ---------------------------------------------------------------------
 
-In Docker, ARG and ENV are both used to define variables
+In Docker, ARG and ENV both are used to define variables
 
 ARG (Build-time Argument)
 
@@ -254,22 +279,61 @@ ls
 
 ----------------------------------------------------------------------
 
+In kubernetes resources can be created in two ways 
+
+1. Imperative  Direct commands
+2. Declarative Configuration files
+
+----------------------------------------------------------------------
+
 Kubectl create sends a request to Kubernetes API Server
 
 The API Server validates the request and stores the resource defintion in etcd
 
+----------------------------------------------------------------------
+
+kubectl run myapp --image=nginx --port=80   
+
+This command creates a Pod that runs the nginx container.
+
+kubectl run Creates a Pod (or Deployment in older versions)
+myapp The name of the Pod
+--image=nginx Specifies the container image (from Docker Hub by default)
+--port=80 Declares that the container will listen on port 80 (useful for networking and later Services)
+
+
+kubectl expose pod myapp --type=NodePort --port=80 --target-port=80
+                                          SerivePort  ContainerPort
+This command creates a Service that exposes your Pod (myapp) to the network — even from outside the cluster.
+
+kubectl expose  Creates a Service for an existing resource (Pod, Deployment, etc.)
+pod myapp The resource you are exposing (your Pod named myapp)
+--type=NodePort The Service type — exposes it externally on each Node’s IP at a static port (range: 30000–32767)
+--port=80 The Service’s internal port, which clients will use to connect to it
+--target-port=80
+
+This specifies the port inside the pod where traffic will be directed.
+
+So when someone accesses port 80 on the Service, Kubernetes forwards the request to port 80 inside the pod myapp.
+
+----------------------------------------------------------------------
 
 kubectl run myapp --image=nginx --port=80
-kubectl run nodeapp --image=manjukempaiah/node-web-app --port=8080
-kubectl expose pods/myapp --type="NodePort" --port 8080
+kubectl expose pod myapp --type=NodePort --port=80 --target-port=80
 
-kubectl expose deployment nginx --port=80 --target-port=80 --type=NodePort
+
+kubectl run nodeapp --image=manjukempaiah/nodeapp --port=8080
+kubectl expose pod nodeapp --type=NodePort --port=8080 --target-port=8080
+
+kubectl create deployment nginx --image=nginx
+kubectl expose deployment nginx --type=NodePort --port=80 --target-port=80 
 
 
 eksctl create cluster --name=jhc-aug-dev
 eksctl create cluster --name=jhc-aug-dev --nodes=5
 eksctl delete cluster --name=jhc-aug-dev 
 
+It reads the configuration from pods.yml and creates the Kubernetes objects defined in it — for example, a Pod, Deployment, or Service.
 
 kubectl create -f pods.yml
 kubectl apply -f pods.yml
@@ -282,7 +346,8 @@ kubectl logs <pod_name>
 kubectl logs <pod_name> -c conatiner_name
 kubectl describe pod <pod_name>
 kubectl describe pod <pod_name> -c container_name
-kubectl describe pod <pod_name> -n namespace | grep "Restart Count"
+To check how many times a pod’s containers have restarted in a given namespace.
+kubectl describe pod <pod_name> -n namespace | grep "Restart Count" 
 kubectl exec -it <pod_name> -- /bin/bash
 kubectl exec -it pod_name -c container_name -- /bin/bash
 kubectl get pods -o wide
@@ -310,6 +375,7 @@ kubectl rollout undo deployment deployment_name -n namespace
 kubectl rollout undo deployment deployment_name -n namespace --to-revision=n
 kubectl rollout restart deployment deployment_name -n namespace
 kubectl rollout history deployment deployment_name -n namespace
+
 kubectl describe deployment deployment_name -n namespace
 
 
@@ -317,6 +383,8 @@ kubectl scale deployment <deployment_name> -n <namespace> --replicas=3
 Kubectl scale rs nginx -n namespace --replicas=n
 
 kubectl set image deployment <deployment-name> -n namespace <container-name>=<image-name>:<tag>
+
+To change the image of a specific container within a Kubernetes deployment
 
 
 sudo systemctl stop kubelet
@@ -940,14 +1008,33 @@ Step 6: UnCordon the Node
 How do you manage application secrets securely in kubernetes?
 
 Use Kubernetes Secrets to store sensitive data.
-
 Mount secrets into pods as environment variables or files.
-
 Restrict access to secrets using RBAC (permissions).
-
 Enable encryption at rest for secrets in etcd.
-
 use external secret managers like AWS Secrets Manager
+
+---------------------------------------------------------------------
+
+How does kubernetes access docker images form privtae registry?
+
+By using imagePullSecrets.
+
+1.Create a Docker registry secret in Kubernetes:
+
+kubectl create secret docker-registry myregistrykey \
+  --docker-server=YOUR_REGISTRY_URL \
+  --docker-username=YOUR_USERNAME \
+  --docker-password=YOUR_PASSWORD \
+  --docker-email=YOUR_EMAIL
+
+2.Use that secret in your pod or deployment:
+
+spec:
+  containers:
+    - name: myapp
+      image: manjukempaiah/pythonapp:0.0.1
+  imagePullSecrets:
+    - name: myregistrykey
 
 ---------------------------------------------------------------------
 
@@ -1065,11 +1152,26 @@ Docker volumes are persistent storage mechanisms used to store and share
 data between containers or between host machine and containers,
 independent of the container's lifecycle.
 
+To run stateful applications such as databases docker volumes
+are required.
+
+Stateful application is an application that stores data in local disk.
+
+Examples of stateful applications are any databases,jenkins,SonarQube,
+Nexus etc
+
 Docker Volumes Types:
 
 1.Volumes
 2.Bind Mounts
 3.tmpfs Mounts
+
+
+1.Volumes: Volumes are managed by docker on the host system.
+
+2.Bind Mounts: Bind Mounts can be stored any where on the host system.
+
+3.tmpfs Mounts: tmpfs Mounts can be stored in the host system memory only(RAM).
 
 --------------------------------------------------------------------
 
@@ -1078,7 +1180,6 @@ Docker Networking
 Docker networking enables communication between containers, 
 and between containers and the outside world.
 
---------------------------------------------------------------------
 Docker Networking Types:
 
 1.Bridge Network
@@ -1088,8 +1189,41 @@ Docker Networking Types:
 5.Overlay Network
 6.Macvlan Network
 
+1.Bridge Network:
+
+* It is the default network whenever you start a docker the bridge network
+  is created and newly statrted containers automatically connected with
+  bridge network.
+* Containers running in isolation to connect and communicate with each other
+  using bridge network.
+
+2.Custom Bridge Network:
+
+* Containers connected to custom bridge network communicate with each other
+  using container names as names.
+
+3.Host Network:
+
+* Host Network uses the network provided by host system and removes network
+  isolation between the container and host system.
+
+4.None Network:
+
+* None Network doesnot attach containers to any external network.
+* Container do not communicate with each other.
+
+5.Overlay Network:
+
+* Overlay Network connect multiple docker daemons together and enable swarm
+  services to communicate with each other
+
+6.MacVLAN Network:
+
+* MacVLAN Netwok allows you to assign MAC address to a conatiner.
+* The docker daemon routes traffic to container by their MAC addresses.
+
 --------------------------------------------------------------------
-3.Docker Compose
+Docker Compose
 
 Docker Compose is a tool that defines and manages 
 multi-container Docker applications using a YAML file.
@@ -1143,9 +1277,7 @@ By using Docker Volumes
 
 docker commit <container-id> recovered-image
 
-If you’ve made changes inside a running container 
-(e.g., installed packages, changed configs), and you don’t want to 
-lose that work, docker commit saves that container as a reusable image.
+To save the running container or stopped container as new image
 
 --------------------------------------------------------------------
 
@@ -1210,7 +1342,8 @@ How do you securely pass environment variables to a container?
  1. Use -e or --env-file (for basic usage)
  2. Use Docker Secrets
  3. Use Kubernetes Secrets (if using K8s)
- 4. Use Secret Management Tools
+ 4. Use third party secrets management tools like aws secrets manger,
+    google cloud key management service and azure key vault.
 
  --------------------------------------------------------------------
 
@@ -1236,12 +1369,10 @@ Who do you manage secrets inside docker container?
    
    Set secrets as environment variables using -e or --env-file.
 
-   docker run -e DB_PASSWORD=mysecret123 myapp
-
-
 2.Docker Secrets (for Swarm mode)
 
-3.Use Secret Management Tools
+3.Use third party secrets management tools like aws secrets manger,
+  google cloud key management service and azure key vault.
 
 --------------------------------------------------------------------
 
@@ -1304,3 +1435,88 @@ How do you monitor Docker containers in production?
 4.Use Docker Health Checks
 
 --------------------------------------------------------------------
+
+Why do Docker Containers fail?
+
+1. Container Startup Issues
+
+Misconfigured Entrypoint or Command: 
+
+If the entrypoint or command in the Dockerfile  is incorrect, 
+the container may exit immediately.
+
+If the docker run command is incorrect, the container may exit immediately.
+
+2. Resource Limits
+
+Out of Memory (OOM): If the container exceeds the available memory, the system may kill it.
+
+CPU Limits:  If the container is restricted by CPU limits may fail under high load.
+
+3. Docker Daemon Issues
+
+Corrupted Docker Installation: If Docker itself has issues, 
+containers may not run properly.
+
+Insufficient Disk Space: If the system runs out of disk space, 
+Docker containers may not start
+
+4. Incorrect Docker Image
+
+Wrong Image Tag: Pulling the wrong image version can
+lead to compatibility issues.
+Corrupted Image: If the Docker image is corrupted, 
+the containers may not start.
+
+--------------------------------------------------------------------
+
+Best practices for creating docker image?
+                  or
+How to secure Docker Images?
+
+ 1.Use official base image
+ 2.Choose minimal base image
+ 3.Leverage muli-stage build
+ 4.Minimize image layers
+ 5.Cleanup after builds
+ 6.Use specific tags for base images
+ 7.Avoid running as a root
+ 8.Avoid installing unnecessary packages
+ 9.Sigle responsibility principle
+ 10.Regularly update the base images
+ 11.Create separate layer for dependencies
+
+--------------------------------------------------------------------
+
+How to secure docker containers?
+ 
+ 1.Avoid running as a root
+ 2.Scan the container image for vulnerabilities
+ 3.Use official base image
+ 4.Chosse minimal base image
+ 5.Secure docker daemon by using TLS certificate for communication
+ 6.Isolate containers running each service in separate container
+ 7.Use Docker bench security the script provided by docker
+
+--------------------------------------------------------------------
+
+ Maven Life Cycle:
+
+mvn validate: Validates the project structure and configuration
+
+mvn compile : Compile the source code of the project
+
+mvn tests   : Runs test against compile source code
+
+mvn package : Package the compile soucrce code into a distributable
+              format
+
+mvn install : Installs the package in to the local repository
+
+mvn deploy  : Copies the package to a remote repository 
+
+--------------------------------------------------------------------
+Pod       : 19
+Service   : 12
+Deployment: 35
+ReplicaSet: 27
