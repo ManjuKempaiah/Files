@@ -50,7 +50,7 @@ git log main                               Shows the commit history of the branc
 git log --oneline main                     Shows the commit history of the branch named main in one line
 git log --oneline -5                       Show last 5 commits only in oneline format
 
-git log --since=10days                     Shows all commits made in the entire repository within the last 10 days.
+git log --since="10 days"                  Shows all commits made in the entire repository within the last 10 days.
 git log --since="3 months ago" <file-name> Shows commits affecting a specific file (<file-name>) since 3 months ago
 
 
@@ -85,9 +85,9 @@ git branch --merged
 git branch --no-merged
 
 
-git branch --contains commit_id
-git fetch --no-checkout origin remotebranch_name
-git checkout remotebranch_name --path_to_file
+git branch --contains commit_id                   To list the branches containing specific commit
+git fetch --no-checkout origin remotebranch_name  To fetch specific file from remote branch
+git checkout remotebranch_name -- path_to_file    To pull speccific file from remote branch
 
 
 git update-ref -d HEAD        Delete the most recent commit in your local git repository
