@@ -4,13 +4,18 @@ terraform plan
 terraform apply
 terrform provider
 
-Remote State
 
 .terraform
 .terraform.lock.hcl
 
 terraform apply -auto-approve
 terraform destroy -auto-approve
+
+Remote State
+
+Remote state stores terraform state file in a shared location to enble 
+collaboration and avoid conficts
+
 
 terraform state -- Manages State
 
@@ -23,6 +28,7 @@ terraform state list  To list the resources created by terraform
 terraform state rm    Removes a resource from the Terraform state without deleting the actual infrastructure
 terraform state mv    Moves or renames a resource in the Terraform state
 
+terraform state rm resource_type.logical_name
 terraform state move aws_instance.old_name aws_instance.new_name
 
 
@@ -37,6 +43,10 @@ terraform apply -auto-approve -var region=eu-north-1
 terraform apply -auto-approve -var-file=dev.tfvars 
 
 terraform.tfstate
+
+provide "aws" {
+  region = "eu-north-1"
+}
 
 terraform {
   backend "s3" {
@@ -56,20 +66,31 @@ terraform apply -auto-approve
 terraform import --- Brings existing resources under terraform control
 terraform import resource_type.logical_name resource_id
 
+
+How do you use loops in terraform?
+
 count or for_each
 
 count     --> Creates multiple identical resources (count=3).
 for_each  --> Creates resources based on a map/set(dynamic keys)
 
+How do you create a resource conditionally in terraform?
+
 count meta argument
 count = var.env == "dev" ? 1 : 0 
 
+How do you manage multiple environments in terraform?
 
 terraform workspace new workspace_name
 terraform workspace select workspace_name
 terraform workspace delete workspace_name
 terraform workspace show
 terraform workspace list
+
+terraform apply -auto-approve -var-file=dev.tfvars
+
+use ingnore_chages = false in lifecycle
+
 
 terraform state pull
 
@@ -348,4 +369,47 @@ terraform state push backup.tfstate   -- To Upload the terraform state file
 terraform state pull > backup.tfstate -- To Download the terraform state file 
                                          from remote backend to Local directory
 --------------------------------------------------------------------
+
+provider "aws" {
+  region = "eu-north-1"
+}
+
+module "vpc" {
+  source     = "./modules/vpc"
+  cidr_block = "10.0.0.0/16"
+  instance_tenancy = "default"
+
+  tags = {
+    Name = "manju-vpc"
+  }
+}
+
+
+module "vpc" → defines a module named vpc.
+
+source = "./modules/vpc" → tells Terraform where the module’s code is located.
+
+In this case, the module is stored locally in the folder ./modules/vpc (relative to your main Terraform file).
+
+
+# Example: create an EC2 instance using values from the vpc module outputs (adjust names to match your vpc module)
+module "ec2_instance" {
+  source = "./modules/ec2"
+
+  ami                   = var.ami_id
+  instance_type         = "m5.large"
+  subnet_id             = module.vpc.public_subnets[0]            # assumes vpc module exports public_subnets (list)
+  availability_zone     = "eu-north-1a"
+  key_name              = var.key_name
+  associate_public_ip_address = true
+  vpc_security_group_ids = [module.vpc.default_security_group_id] # assumes vpc module exports this
+
+  tags = {
+    Name = "manju-instance"
+  }
+}
+
+--------------------------------------------------------------------
+
+
 
