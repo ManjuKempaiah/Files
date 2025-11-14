@@ -142,7 +142,7 @@ is used to search for a specific pattern in a file and display the matching line
 
 
 𝐇𝐨𝐰 𝐭𝐨 𝐬𝐞𝐚𝐫𝐜𝐡 𝐦𝐮𝐥𝐭𝐢𝐩𝐥𝐞 𝐰𝐨𝐫𝐝𝐬 𝐚𝐧𝐝 𝐝𝐢𝐬𝐩𝐥𝐚𝐲 𝐦𝐚𝐭𝐜𝐡𝐢𝐧𝐠 𝐜𝐨𝐧𝐭𝐞𝐧𝐭 𝐟𝐫𝐨𝐦 𝐚 𝐟𝐢𝐥𝐞 𝐢𝐧 𝐋𝐢𝐧𝐮𝐱?
-grep -E 'word1|word2|word3' filename
+grep -E "word1|word2|word3" filename
 
 How do find lines with the "ERROR" in multiple .log files, showing filename and line number?
 grep -n "ERROR" *.log 
@@ -174,7 +174,7 @@ By using Top or Ps command
 
 How to block root user?
 
-Modify shh configuration file /etc/ssh/sshd_config
+Modify ssh configuration file /etc/ssh/sshd_config
 Set PermitRootLogin to no.
 Restart the ssh service
 By using sudo systemctl restart sshd
@@ -269,7 +269,7 @@ Ans: find /path/to/directory -type f -name *.log -mtime -7
 
 -mtime -7 → Modified within the last 7 days
 
-11.Diff b/w chmod and chown?
+11.Diff b/w chmod,chown and chgrp?
 Ans: chmod    - To Change the permissions of files and dircetories
      chown    - To Change the ownership of files and directories 
      chgrp    - To change the group ownership of files or directories
@@ -321,7 +321,7 @@ userdel <user_name> <group_name>
 ---------------------------------------------------------------------
 
 1.How do you monitor real time logs for specific process?
-  tail -f /path/to/logfile.log | grep "process_name"
+  tail -f /path/to/logfile.log | grep <process_name>
 
 2.How do check disk I/O usage?
   iostat -x 1
@@ -541,7 +541,7 @@ systemctl status <service>
 
 7. Hard Link                                Soft Link
 
-  Hard Link files as same inode number      Soft Link files as different number
+  Hard Link files as same inode number      Soft Link files as different inode number
 
   Hard Links created to only files          Soft Link created to files and directoris
 
