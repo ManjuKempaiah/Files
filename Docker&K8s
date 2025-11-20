@@ -20,8 +20,7 @@ HEALTHCHECKS-- To check the health of the application
 -it         -- Interactive Terminal(in the foreground)
 -itd        -- Interactive Terminal Detached Mode
  
-
------------------------------------------------------------------------------------------
+---------------------------------------------------
 
 FROM nginx:latest
 EXPOSE 80
@@ -63,49 +62,7 @@ CMD [/tomcat/apache-tomcat-9.0.102/bin/catalina.sh, "run"]
 
 Extract the contents of the apache-tomcat-9.0.91.tar.gz archive.
 Remove the archive file after extraction to save space in the Docker image.
-----------------------------------------------------------------------------------------------
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: my-deployment
-  labels:
-    app: my-app
-spec:
-  replicas: 3  # Desired number of pods
-  selector:
-    matchLabels:
-      app: my-app
-  template:
-    metadata:
-      labels:
-        app: my-app
-    spec:
-      containers:
-      - name: my-container
-        image: my-image
-        ports:
-        - containerPort: 80
----
-apiVersion: autoscaling/v2beta2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: my-deployment-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: my-deployment
-  minReplicas: 2  # Minimum number of pods
-  maxReplicas: 10  # Maximum number of pods
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50  # Target average CPU utilization
------------------------------------------------------------------------
+--------------------------------------------------------
 
 docker ps                       used to list running containers in Docker
 docker ps -a                    lists running + stopped + exited + created containers
@@ -239,6 +196,10 @@ To save the current state of a running or stopped container as a new image
 docker run --restart=always <image_name>
 docker run --restart=on-failure:5 <image_name>
 docker run --restart=never <image_name>
+
+To copy a file from one container to another using pipe:
+docker cp container1:/path/to/file - | docker cp - container1:/path/to/file
+
 
 docker run -e DB_PASSWORD=$DB_PASSWORD myapp
 
@@ -399,167 +360,8 @@ sudo vi deployment.yml
 esc Shit+: wq
 10 dd to delete lines in the file
 cat deployment.yml To show content in the file
-----------------------------------------------------------------------------------------------
 
-Nginx playbook
-
-- hosts: 172.31.41.58
-  become: True
-  tasks:
-    - name: configure nginx rpm
-      yum: name=http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
-    - name: install nginx
-      yum:
-        name: nginx
-        state: present
-    - name: copy nginx config file
-      copy:
-        src: nginx.conf
-        dest: /etc/nginx/nginx.conf
-      notify:
-          - restart nginx
-    - name: start and enable
-      service:
-        name: nginx
-        state: started
-        enabled: True
-  handlers:
-    - name: restart nginx
-      service :
-        name: nginx
-        state: restarted
-
-Installs the NGINX repository package so that yum can access official NGINX packages.
-
-Copying the nginx.conf file from the current machine to the /etc/nginx/nginx.conf directory on the target machine ensures that the Nginx server on the target machine is configured according to the specifications defined in the nginx.conf file.
-
-This triggers the restart nginx handler whenever the file is changed.
-Handlers run only if the task makes changes (e.g., if nginx.conf is modified).
-
-RPM -- RedHat Package Manager
-
--------------------------------------------------------------------------------------------------------------------
-
-Apache playbook
-
-- hosts: 172.31.36.99
-  become: True
-  tasks:
-    - name: install apache
-      yum:
-        name: httpd
-        state: present
-    - name : put sample html file on apache
-      copy:
-        src: index.html
-        dest: /var/www/html
-    - name: start and enable apache
-      service:
-        name: httpd
-        state: started
-        enabled: True     
------------------------------------------------------------------------------------------------------------------
-Ansible tags
-
-- hosts: web
-  become: True
-  tasks:
-    - name: Install apache
-      yum:
-        name: httpd
-        state: present
-      tags:
-          - install
-    - name: put sample html file on apache
-      copy:
-        src: index.html
-        dest: /var/www/html/
-      tags:
-          - deploy
-    - name: start and enable apache
-      service:
-        name: httpd
-        state: started
-        enabled: True
-      tags:
-          - start
-
--------------------------------------------------------------------------------------------------------------------
-
-Can you please write ansible playbook conditionally install a package,if it is linux how to install package,if it is ubuntu how to install a package.
-
-- hosts: 172.31.36.99
-  become: True
-  tasks:
-    - name: install apache on linux
-      yum:
-        name: httpd
-        state: present
-      when: ansible_facts['os_family'] == "RedHat"
-    - name: install apache on ubuntu
-      apt:
-        name: apache2
-        state: present
-      when: ansible_facts['os_family'] == "Debian"
-
--------------------------------------------------------------------------------------------------------------------
-
-Docker install
-
-- hosts: localhost
-  become: True
-  tasks:
-    - name: install docker
-      yum:
-        name: docker
-        state: present
-    - name: Grant ec2-user permissions on docker
-      command:
-        cmd: "usermod -a -G docker ec2-user"
-    - name: start docker
-      service:
-        name: docker
-        state: started
-
--------------------------------------------------------------------------------------------------------------------
-
-node.js install 
-  
-- name: Install Node.js
-  hosts: your_target_hosts
-  become: yes
-  tasks:
-    - name: Install Node.js
-      apt:
-        name: nodejs
-        state: present
-      when: ansible_distribution == 'Ubuntu'
-    - name: Install Node.js on CentOS
-      yum:
-        name: nodejs
-        state: present
-      when: ansible_distribution == 'CentOS'
-    - name: Install Node.js on Amazon Linux
-      yum:
-        name: nodejs
-        state: present
-      when: ansible_distribution == 'Amazon'
-
--------------------------------------------------------------------------------------------------------------------
-
-Copy file from EC2 to target machine
-
-- name: Copy file from EC2 to target machine
-  hosts: target_machine
-  become: yes
-  tasks:
-    - name: Copy file from EC2 to target machine
-      copy:
-        src: /path/to/source/file/on/ec2
-        dest: /path/to/destination/folder/on/target_machine
-
-
--------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------
 
 pods.yml
 
@@ -598,7 +400,9 @@ limits: Sets upper limits on the resources the container can consume.
 Mibs
 Millicourse
 
--------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------
+
+Service
 
 nginxsvc.yml
 
@@ -624,135 +428,9 @@ targetPort: 80: Specifies that the traffic should be forwarded to Pods on port 8
 
 nodePort: 30000: Opens a specific port on all nodes in the cluster, allowing external traffic to reach the Service.
 
--------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------
 
-ReplicaSet
-
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: nginx
-spec:
-  replicas: 3
-  selector:
-    matchExpressions:
-      - {key: app, operator: In, values: [nginx]}
-  template:
-    metadata:
-      name: nodeapp
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx
-        ports:
-        - containerPort: 80
-
--------------------------------------------------------------------------------------------------------------------
-
-Deployment
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myapp
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: myapp
-  template:
-    metadata:
-      labels:
-        app: myapp
-    spec:
-      containers:
-      - name: myapp
-        image: kammana/nodeapp:v1
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
-        ports:
-        - containerPort: 8080
-
--------------------------------------------------------------------------------------------------------------------
-
- Rolling Updates
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nodeapp
-spec:
-  replicas: 5
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-  selector:
-    matchLabels:
-      app: nodeapp
-  template:
-    metadata:
-      labels:
-        app: nodeapp
-    spec:
-      containers:
-      - image: kammana/nodeapp:v2
-        name: nodeapp
-        ports:
-        - containerPort: 8080
-
-maxSurge: Represents the maximum number or percentage of Pods that can be created above the desired number of replicas during an update. Here, it is set to 25%.
-maxUnavailable: Represents the maximum number or percentage of Pods that can be unavailable (not running) during an update. Here, it is set to 25%.
-
--------------------------------------------------------------------------------------------------------------------
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nodeapp
-spec:
-  replicas: 5
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-  selector:
-    matchLabels:
-      app: nodeapp
-  template:
-    metadata:
-      labels:
-        app: nodeapp
-    spec:
-      containers:
-      - image: kammana/nodeapp:v2
-        name: nodeapp
-        ports:
-        - containerPort: 8080
-        volumeMounts:
-        - name: data-volume
-          mountPath: /app/data   # Mount the volume to this path
-  volumes:
-  - name: data-volume
-    persistentVolumeClaim:
-      claimName: my-pvc   # Name of the PersistentVolumeClaim
-
--------------------------------------------------------------------------------------------------------------------
-
-Core API Group (v1)
-Extended API Group (apps/v1)
-
-v1: Used for core, stable, and essential resources like Pods, Services, ConfigMaps, etc., which are part of Kubernetes' fundamental operations.
-
-apps/v1: Used for more complex, application-related resources like Deployments, StatefulSets, and DaemonSets, which are managed separately to allow for greater flexibility and evolution.
-
-------------------------------------------------------------------------------------------------------------------
+Deploymnet
 
 apiVersion: apps/v1
 kind: Deployment
@@ -789,7 +467,10 @@ spec:
     - name: data-volume
       persistentVolumeClaim:
         claimName: my-pvc
---------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------
+
+ReplicaSet
 
 apiVersion: apps/v2
 kind: ReplicaSet
@@ -818,39 +499,211 @@ spec:
               cpu: "500m"
           ports:
             - containerPort: 80
-------------------------------------------------------------------------------------------------------------------
 
-withcredentials: Bind credentials to variables
+------------------------------------------------------
 
-Username and password(separated)
-Username Varible: user
-Password Variable: pwd
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+  labels:
+    app: my-app
+spec:
+  replicas: 3  # Desired number of pods
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-container
+        image: my-image
+        ports:
+        - containerPort: 80
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-deployment-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: my-deployment
+  minReplicas: 2  # Minimum number of pods
+  maxReplicas: 10  # Maximum number of pods
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50  # Target average CPU utilization
 
-sshagent: SSH Agent
+----------------------------------------------------------
 
-sshagent(['docker-ssh']) {
-    // some block
-}
+Nginx playbook
 
--o StrictHostKeyChecking=no
+- hosts: 172.31.41.58
+  become: True
+  tasks:
+    - name: configure nginx rpm
+      yum: name=http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+    - name: install nginx
+      yum:
+        name: nginx
+        state: present
+    - name: copy nginx config file
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+      notify:
+          - restart nginx
+    - name: start and enable
+      service:
+        name: nginx
+        state: started
+        enabled: True
+  handlers:
+    - name: restart nginx
+      service :
+        name: nginx
+        state: restarted
 
-sh "" --> Is Very Important to Perform script on remote shell
+Installs the NGINX repository package so that yum can access official NGINX packages.
 
-To Build Docker Image,Push,and RUN we need install docker on jenkins server
+Copying the nginx.conf file from the current machine to the /etc/nginx/nginx.conf directory on the target machine ensures that the Nginx server on the target machine is configured according to the specifications defined in the nginx.conf file.
 
-sudo yum install docker -y
-sudo sytemctl start docker
-sudo sytemctl status docker
-sudo sytemctl enable docker
-sudo usermod -a -G docker jenkins
-sudo systemctl restart jenkins
+This triggers the restart nginx handler whenever the file is changed.
+Handlers run only if the task makes changes (e.g., if nginx.conf is modified).
 
-Docker public_ip:8080
+RPM -- RedHat Package Manager
 
-8080:5000
-hosport containerport
+----------------------------------------------------------
 
--------------------------------------------------------------------------------
+Apache playbook
+
+- hosts: 172.31.36.99
+  become: True
+  tasks:
+    - name: install apache
+      yum:
+        name: httpd
+        state: present
+    - name : put sample html file on apache
+      copy:
+        src: index.html
+        dest: /var/www/html
+    - name: start and enable apache
+      service:
+        name: httpd
+        state: started
+        enabled: True     
+----------------------------------------------------------
+Ansible tags
+
+- hosts: web
+  become: True
+  tasks:
+    - name: Install apache
+      yum:
+        name: httpd
+        state: present
+      tags:
+          - install
+    - name: put sample html file on apache
+      copy:
+        src: index.html
+        dest: /var/www/html/
+      tags:
+          - deploy
+    - name: start and enable apache
+      service:
+        name: httpd
+        state: started
+        enabled: True
+      tags:
+          - start
+
+-------------------------------------------------------
+
+Can you please write ansible playbook conditionally install a package,if it is linux how to install package,if it is ubuntu how to install a package.
+
+- hosts: 172.31.36.99
+  become: True
+  tasks:
+    - name: install apache on linux
+      yum:
+        name: httpd
+        state: present
+      when: ansible_facts['os_family'] == "RedHat"
+    - name: install apache on ubuntu
+      apt:
+        name: apache2
+        state: present
+      when: ansible_facts['os_family'] == "Debian"
+
+---------------------------------------------------------
+
+Docker install
+
+- hosts: localhost
+  become: True
+  tasks:
+    - name: install docker
+      yum:
+        name: docker
+        state: present
+    - name: Grant ec2-user permissions on docker
+      command:
+        cmd: "usermod -a -G docker ec2-user"
+    - name: start docker
+      service:
+        name: docker
+        state: started
+
+--------------------------------------------------------
+
+node.js install 
+  
+- name: Install Node.js
+  hosts: your_target_hosts
+  become: yes
+  tasks:
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+      when: ansible_distribution == 'Ubuntu'
+    - name: Install Node.js on CentOS
+      yum:
+        name: nodejs
+        state: present
+      when: ansible_distribution == 'CentOS'
+    - name: Install Node.js on Amazon Linux
+      yum:
+        name: nodejs
+        state: present
+      when: ansible_distribution == 'Amazon'
+
+-----------------------------------------------------------
+
+Copy file from EC2 to target machine
+
+- name: Copy file from EC2 to target machine
+  hosts: target_machine
+  become: yes
+  tasks:
+    - name: Copy file from EC2 to target machine
+      copy:
+        src: /path/to/source/file/on/ec2
+        dest: /path/to/destination/folder/on/target_machine
+
+
+--------------------------------------------------------
 
 pipeline{
     agent any
@@ -921,9 +774,55 @@ pipeline{
     }
 }
 
+-----------------------------------------------------------
+
+maxSurge: Represents the maximum number or percentage of Pods that can be created above the desired number of replicas during an update. Here, it is set to 25%.
+maxUnavailable: Represents the maximum number or percentage of Pods that can be unavailable (not running) during an update. Here, it is set to 25%.
+
+-----------------------------------------------------------
+
+Core API Group (v1)
+Extended API Group (apps/v1)
+
+v1: Used for core, stable, and essential resources like Pods, Services, ConfigMaps, etc., which are part of Kubernetes' fundamental operations.
+
+apps/v1: Used for more complex, application-related resources like Deployments, StatefulSets, and DaemonSets, which are managed separately to allow for greater flexibility and evolution.
 
 
-----------------------------------------------------------------------
+-----------------------------------------------------------
+
+withcredentials: Bind credentials to variables
+
+Username and password(separated)
+Username Varible: user
+Password Variable: pwd
+
+sshagent: SSH Agent
+
+sshagent(['docker-ssh']) {
+    // some block
+}
+
+-o StrictHostKeyChecking=no
+
+sh "" --> Is Very Important to Perform script on remote shell
+
+To Build Docker Image,Push,and RUN we need install docker on jenkins server
+
+sudo yum install docker -y
+sudo sytemctl start docker
+sudo sytemctl status docker
+sudo sytemctl enable docker
+sudo usermod -a -G docker jenkins
+sudo systemctl restart jenkins
+
+Docker public_ip:8080
+
+8080:5000
+hosport containerport
+
+--------------------------------------------------------
+
 
 How to manage multi-cluster deployments?
 
@@ -958,10 +857,22 @@ By using StatefulSets, Persistent Volumes and Persistent Volume Claims.
 
 How do you handle pod failures?
 
+Check if the pod is running or not by using kubectl get pods
+Describe the pod by using kubectl describe pod pod_name
+Check the logs by using kubectl logs pod_name
 Use Readiness and Liveness Probes
 Set Restart Policies (Always,OnFailure,Never)
 Check Node Availability
 Check taint and tolerations
+Check resource limits
+
+---------------------------------------------------------------------
+Why does CrashLoopBackoff happen?
+
+Configuartion issues
+Resource limits
+Application Errors
+Health checks are failing
 
 ---------------------------------------------------------------------
 
