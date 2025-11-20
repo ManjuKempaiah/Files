@@ -2,20 +2,21 @@ FROM jenkins/jenkins:lts
 
 FROM jenkins/jenkins:lts: Specifies the base image to use. This image is the official Jenkins image, using the LTS (Long-Term Support) version.
 
------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------
+
 
 FROM docker:latest
 
 FROM docker:latest: Specifies the base image to use. The docker:latest image already contains Docker installed, so you don't need to manually install it.
 
-------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------
 
 
 FROM nginx:latest
 EXPOSE 80		
 CMD ["nginx", "-g", "daemon off;"]
 
------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------
 
 Dockerfile for SpringBootApplication
 
@@ -25,7 +26,7 @@ COPY app.jar .
 EXPOSE 8080
 CMD ["java", "-jar", "app.jar"]
 
------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------
 
 Dockerfile for tomcat
 
@@ -37,7 +38,7 @@ RUN tar xf apache-tomcat-9.0.78.tar.gz && rm apache-tomcat-9.0.78.tar.gz
 EXPOSE 8080
 CMD ["/tomcat/apache-tomcat-9.0.78/bin/catalina.sh", "run"]
 
------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------
 
 Dockerfile for Pythonapp
 
@@ -51,7 +52,7 @@ COPY app.py .
 EXPOSE 80
 CMD ["python3","app.py"]
 
------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------
 
 Docker file for Node Js
 
@@ -63,7 +64,7 @@ COPY server.js .
 EXPOSE 8080
 CMD [ "node", "server.js" ]
 
------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------
 
 Apache playbook
 
@@ -84,7 +85,7 @@ Apache playbook
         state: started
         enabled: True
 
---------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------
 
 Nginx playbook
 
@@ -114,7 +115,9 @@ Nginx playbook
         name: nginx
         state: restarted
 
-------------------------------------------------------------------------------------------------------------------------------------------
+Copying the nginx.conf file from the current machine to the /etc/nginx/nginx.conf directory on the target machine ensures that the Nginx server on the target machine is configured according to the specifications defined in the nginx.conf file.        
+
+--------------------------------------------------
 
 Can you please write ansible playbook conditionally install a package,if it is linux how to install package,if it is ubuntu how to install a package.
 
@@ -132,7 +135,7 @@ Can you please write ansible playbook conditionally install a package,if it is l
         state: present
       when: ansible_facts['os_family'] == "Debian"
 
-----------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------
 
 Docker install
 
@@ -151,7 +154,7 @@ Docker install
         name: docker
         state: started
 
----------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------
 
 node.js install 
 
@@ -175,7 +178,7 @@ node.js install
         state: present
       when: ansible_distribution == 'Amazon'
 
-------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------
 
 Copy file from EC2 to target machine
 
@@ -189,7 +192,7 @@ Copy file from EC2 to target machine
         dest: /path/to/destination/folder/on/target_machine
 
 
-------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------
 
 pods.yml
 
@@ -219,7 +222,7 @@ requests: Specifies the minimum amount of resources the container needs.
 
 limits: Sets upper limits on the resources the container can consume.
 
---------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------
 
 nginxsvc.yml
 
@@ -242,7 +245,7 @@ targetPort: 80: Specifies that the traffic should be forwarded to Pods on port 8
 
 nodePort: 30000: Opens a specific port on all nodes in the cluster, allowing external traffic to reach the Service.
 
---------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------
 
 ReplicaSet
 
@@ -267,7 +270,7 @@ spec:
         ports:
         - containerPort: 80
 
-------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------
 
 Deployment
 
@@ -295,7 +298,7 @@ spec:
         ports:
         - containerPort: 8080
 
----------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------
 
  Rolling Updates
 
@@ -327,7 +330,7 @@ spec:
 maxSurge: Represents the maximum number or percentage of Pods that can be created above the desired number of replicas during an update. Here, it is set to 25%.
 maxUnavailable: Represents the maximum number or percentage of Pods that can be unavailable (not running) during an update. Here, it is set to 25%.
 
-------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------
 
 apiVersion: apps/v1
 kind: Deployment
@@ -361,5 +364,5 @@ spec:
     persistentVolumeClaim:
       claimName: my-pvc   # Name of the PersistentVolumeClaim
 
------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------
 
