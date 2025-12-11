@@ -41,11 +41,11 @@ git push origin main
 git revert commit_id
 
 
-git stash -m 'stashing abc'
-git stash list
-git stash apply
-git stash pop
-git stash drop
+git stash -m 'stashing abc'          To stash a file
+git stash list                       To List the stashes
+git stash apply                      It removes the topmost stash in the list and also it keeps the stash in list
+git stash pop                        It removes the topmost stash in the list
+git stash drop                       It deletes the topmost stash in the list
 
 git log                                    Shows commit history of the current branch only
 git log main                               Shows the commit history of the branch named main
