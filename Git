@@ -15,7 +15,7 @@ cd git-manju
 code .
 
 git config --global user.name "user_name"
-git config --global user.email "manjukempaiah31@gmail.com"  To Set git username and email for all commits you make
+git config --global user.email "user_email"                 To Set git username and email for all commits you make
                                                             on your system.
 git status
 git add <file_name>
@@ -29,11 +29,13 @@ git commit -m 'committing message'
 git commit -a -m 'committing message'
 
 
-git reset commit_id
+git reset commit_id          --- Remove the commit and keep the changes in Working area
 git reset --soft commit_id   --- Remove the commit and keep the changes in Staging area
 git reset --mixed commit_id  --- Remove the commit and keep the changes in Working area
 git reset --hard commit_id   --- Remove the commit and dicard the changes permanently
 git reset --hard HEAD~2      --- To delete the last two commits in git
+git reset --hard HEAD~1      --- To delete the last commit
+git update-ref -d HEAD       --- To delete the most recent commit
 
 git push origin main
 git revert commit_id
@@ -48,16 +50,23 @@ git stash drop
 git log                                    Shows commit history of the current branch only
 git log main                               Shows the commit history of the branch named main
 git log --oneline main                     Shows the commit history of the branch named main in one line
-git log --oneline -5                       Show last 5 commits only in oneline format
-
-git log --since="10 days"                  Shows all commits made in the entire repository within the last 10 days.
-git log --since="3 months ago" <file-name> Shows commits affecting a specific file (<file-name>) since 3 months ago
+git log --oneline -5                       Shows last 5 commits only in oneline format
+git log --oneline main -5
 
 
-git log -L 10,20:<file-name>               Show history of changes to a specific range of lines
-git blame -L 10,20 <file-name>             Show who last modified each line in that range
-git blame <file-name>
+
+git log --since=10days                     Shows all commits made in the entire repository within the last 10 days.
+git log --since=3monthsago                 Shows all commits made in the entire repository since 3 months ago
+
+git log --since=10days file_name           Shows commits affecting a specific file within the last 10 days
+git log --since=3monthsago file_name       Shows commits affecting a specific file since 3 months ago
+git log -L 10,20:file-name                 Shows history of changes to a specific range of lines
+
+
+git blame filename
 git annotate file_name
+git blame -L 10,20 <file-name>             Shows who last modified each line in that range
+git annotate -L 10,20 <file-name>          Shows who last modified each line in that range
 git reflog
 
 
